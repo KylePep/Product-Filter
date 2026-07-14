@@ -62,9 +62,6 @@ filter-forge/
 │   │   ├── class-query-manager.php       # registers pre_get_posts, delegates to filters
 │   │   ├── class-category-filter.php     # pre_get_posts addition: category/tag as filter
 │   │   ├── class-meta-filter.php         # pre_get_posts addition: custom field/meta
-│   │   ├── class-price-filter.php        # translates a selected price bucket into
-│   │   │                                 #   min_price/max_price ahead of WooCommerce's
-│   │   │                                 #   own price-filter logic
 │   │   ├── interface-count-provider.php  # get_count( $option ) contract
 │   │   ├── class-count-service.php       # per-option counts under current filter state,
 │   │   │                                 #   v1 implementation behind this interface
@@ -81,7 +78,15 @@ filter-forge/
 Note: WooCommerce's own `pre_get_posts` handling of native query vars (`filter_pa_*`,
 `min_price`/`max_price`, `filter_stock_status`, `rating_filter`) needs no wrapper class
 of ours — there's nothing for Filter Forge to do there beyond leaving it alone, so no
-"native query" class exists in this structure.
+"native query" class exists in this structure. This also means price needs no custom
+query-modification class at all: both the Price widget's Slider and Predefined Buckets
+modes render links containing literal `min_price`/`max_price` values (buckets are just
+a UI convenience over the same native params), so WooCommerce's existing handling
+applies with zero extra code. A `pre_get_posts` hook can't know a page's bucket
+definitions anyway — those live in Elementor's per-page widget settings, not `$_GET`,
+and would only be resolvable by parsing the page's raw Elementor document data, which
+is unnecessary complexity avoided by keeping the translation client-side/render-time
+instead.
 
 **Requirements gate:** on `plugins_loaded`, check WooCommerce and Elementor Pro are both
 active. If either is missing, show an admin notice and do not register any widgets or
@@ -193,8 +198,10 @@ Controls:
   "& above").
 - Same Filter Key / Parent Filter Key / relationship toggles as the Filter widget, so
   Price can be a child of e.g. Category.
-- Bucket mode translates the selected bucket into `min_price`/`max_price` before
-  WooCommerce's own price-filter logic runs, so no divergent query path is needed.
+- Both modes render links/inputs carrying literal `min_price`/`max_price` values —
+  buckets are computed to concrete values at render time from the widget's own
+  settings, not an opaque index resolved later. WooCommerce's native price-filter
+  handling processes the result with no custom query code needed.
 
 ### 4.3 Reset widget
 
@@ -235,10 +242,10 @@ Request flow on page load:
    `rating_filter`) — Filter Forge does not touch these.
 3. `FF_Query_Manager` (registered on `pre_get_posts`) delegates to the small
    per-concern services that add to the same main query: `FF_Category_Filter`
-   (category/tag-as-filter beyond the archive's own term), `FF_Meta_Filter`
-   (custom-field/meta filters), and `FF_Price_Filter` (translates a selected price
-   bucket into `min_price`/`max_price` ahead of WooCommerce's own logic). Each reads
-   the current selections via `FF_Filter_State` rather than `$_GET` directly.
+   (category/tag-as-filter beyond the archive's own term) and `FF_Meta_Filter`
+   (custom-field/meta filters). Each reads the current selections via
+   `FF_Filter_State` rather than `$_GET` directly. Price needs no such service — see
+   §3 note above.
 4. Elementor's Loop Grid / Products widget (Main Query mode) renders normally, untouched.
 5. Each Filter Forge widget, at render time, reads `FF_Filter_State` to: mark its own
    selected option(s), compute per-option counts via faceted counting (§5), hide
@@ -294,8 +301,8 @@ multiple grids on one page.
 ## 9. Testing Approach
 
 - **Unit tests (PHPUnit + WP test suite):** query-building logic (`FF_Category_Filter`,
-  `FF_Meta_Filter`, `FF_Price_Filter`'s bucket-to-min/max translation, and the
-  relationship resolver's reset/hide decisions) — pure logic, testable without a
+  `FF_Meta_Filter`), the Price widget's bucket-to-min/max render-time translation, and
+  the relationship resolver's reset/hide decisions — pure logic, testable without a
   browser.
 - **Manual/integration verification:** final verification on a real WP install with
   Elementor Pro + WooCommerce + sample products, since this deeply integrates with
