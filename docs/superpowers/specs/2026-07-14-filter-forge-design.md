@@ -259,7 +259,14 @@ Request flow on page load:
 ```
 
 Native WooCommerce vars keep WooCommerce's own names; Filter Forge's custom vars use an
-`ff_` prefix to avoid collisions.
+`ff_` prefix to avoid collisions. Two reserved names, `ff_cat` and `ff_tag`, carry
+comma-separated slugs for category/tag-as-filter. Every *other* `ff_{meta_key}` param
+is treated by `FF_Meta_Filter` as a direct custom-field filter on `{meta_key}` — the
+param name doubles as the meta key itself, so `pre_get_posts` (which fires before
+Elementor renders the page) never needs to look up which meta keys a page's widgets
+were configured with; it just processes whatever `ff_*` params are present on the
+request. This is the same reasoning as the price-widget fix above: derive everything
+needed from the URL, never from re-parsing Elementor's page data.
 
 **Client-side JS (vanilla, no framework, no AJAX):** a small `FF_URL` helper
 (`get()` / `set()` / `remove()` / `navigate()`) is the single place that reads and
