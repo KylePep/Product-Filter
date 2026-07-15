@@ -296,9 +296,13 @@ multiple grids on one page.
 - **Invalid/tampered query params:** unknown taxonomy/meta keys or malformed price
   values in `$_GET` are silently ignored rather than erroring.
 - **Orphaned Parent Filter Key:** if a child references a Filter Key not present
-  elsewhere on the page, the child behaves as if it has no parent (renders normally,
-  no hide/reset logic), plus an editor-only (not front-end) notice so the site builder
-  notices the misconfiguration.
+  elsewhere on the page, and "hide until parent selected" is on, the child stays
+  permanently hidden (its parent's value can never appear in the URL) — a safe
+  default. **Deferred for v1:** an editor-only notice flagging the misconfiguration
+  would require Elementor editor-side JS that scans the page's widgets to validate
+  the reference live in the editor; this is more upfront work than a v1 nice-to-have
+  justifies, so the site builder currently has to notice the issue by testing the
+  page rather than being warned in the editor.
 - **Zero results after filtering:** left entirely to Elementor's Loop Grid's own empty
   state — Filter Forge does not build one, consistent with not touching rendering.
 - **Non-archive / unsupported pages:** a Filter Forge widget placed where the main
