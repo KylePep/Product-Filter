@@ -42,9 +42,11 @@ npx wp-env run tests-cli --env-cwd=wp-content/plugins/filter-forge composer inst
 npm run test:php               # runs the full PHPUnit suite inside tests-cli
 ```
 
-**Running a single test file or method** (append PHPUnit args after `--`):
+**Running a single test class or method** (append PHPUnit args after `--`; use
+`--filter`, not a bare file path — a lone path argument makes PHPUnit expect the file
+to define a class matching the file's own name, which our `Test_FF_*` classes don't):
 ```bash
-npm run test:php -- filter-forge/tests/test-class-filter-state.php
+npm run test:php -- --filter Test_FF_Filter_State
 npm run test:php -- --filter test_get_returns_sanitized_value
 ```
 
