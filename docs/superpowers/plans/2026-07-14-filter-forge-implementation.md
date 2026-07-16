@@ -1103,7 +1103,7 @@ class FF_Meta_Filter {
         }
 
         foreach ( $this->filter_state->all() as $param => $value ) {
-            if ( '' === $value || 0 !== strpos( $param, 'ff_tax_' ) || 0 !== strpos( $param, 'ff_' ) ) {
+            if ( '' === $value || 0 !== strpos( $param, 'ff_' ) || 0 === strpos( $param, 'ff_tax_' ) ) {
                 continue;
             }
 
@@ -1122,10 +1122,14 @@ class FF_Meta_Filter {
 }
 ```
 
-Note the condition order: a param must start with `ff_` to be considered at all, and
-must **not** also start with the more specific `ff_tax_` prefix (checked first via
-short-circuit) — this is what keeps `FF_Meta_Filter` and `FF_Category_Filter` from
-double-handling the same param.
+A param must start with `ff_` to be considered at all, and must **not** also start
+with the more specific `ff_tax_` prefix — this is what keeps `FF_Meta_Filter` and
+`FF_Category_Filter` from double-handling the same param. (An earlier draft of this
+condition had the `strpos()` comparisons backwards — `0 !== strpos(...)` reads as
+"does NOT start with," so OR-ing two such checks together skips almost everything
+instead of narrowing to the right params. The tests below caught it immediately: the
+`ff_material` case failed to produce a `meta_query` and the `ff_tax_product_cat` case
+produced one it shouldn't have. Trust the tests over the prose if they ever disagree.)
 
 - [ ] **Step 4: Run the tests, confirm they pass**
 
