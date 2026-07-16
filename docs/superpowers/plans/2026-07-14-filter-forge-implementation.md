@@ -2509,6 +2509,32 @@ git commit -m "Add front-end JS/CSS: instant-navigate filtering, reset-on-change
 This is the integration gate the spec calls for in place of automated
 Elementor-editor-level tests. Work through it on the running wp-env site.
 
+**Status as actually executed:** no browser-automation tool was available in this
+session, so Steps 1–3 below were done via WP-CLI/curl instead of a real browser, and
+Steps 4–9 (building the Elementor page and clicking through relationship/reset
+behavior) were deferred to the user rather than skipped or faked. What was actually
+verified:
+- Plugin activates cleanly alongside WooCommerce + Elementor; `wp plugin list` shows
+  all three active, no `debug.log` ever appears (i.e. no PHP notices/warnings/fatals).
+- Deactivating WooCommerce triggers the requirements gate without a fatal (checked via
+  HTTP status, not the actual rendered notice text — that still needs eyes-on
+  confirmation).
+- Sample data seeded via `wp eval-file`: 2 categories, a `pa_color` attribute, a
+  `material` custom field, 6 products priced $12–$220.
+- Shop/category archive URLs, including ones with `ff_tax_product_cat=...` query
+  params, return clean HTTP 200s.
+- **Found and fixed during this pass:** the dev site was taking 17-24 seconds per
+  request. Root cause and fix are in Task 1's and Task 11's "Correction found during
+  Task 17" notes above (`vendor/autoload.php` loaded on every request, pulling in
+  1,193 files of dev-only dependencies through a slow Windows bind mount). Confirmed
+  via a control request to `wp-login.php` (which touches zero Filter Forge code, still
+  17s) that the *remaining* slowness is a Docker Desktop/WSL2 environment issue, not a
+  plugin bug — deferred to the user rather than chased further, since it's outside
+  this plugin's code.
+- **Explicitly not yet done:** Steps 4–9 (building the actual Elementor page and
+  clicking through category/material/price/reset behavior in a browser). Do this
+  before considering v1 complete.
+
 - [ ] **Step 1: Start the site and confirm the plugin activates cleanly**
 
 ```bash
