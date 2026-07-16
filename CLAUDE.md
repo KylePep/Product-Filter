@@ -57,6 +57,14 @@ through an `npm run` script, prefix it with `MSYS_NO_PATHCONV=1` — Git Bash's 
 layer otherwise rewrites POSIX-looking paths like `/var/www/html/...` into a mangled
 Windows path before Docker ever sees them.
 
+**New PHP class files need an autoload dump:** `includes/` is autoloaded via
+Composer's `classmap`, which is generated once at install time — adding a new
+`class-*.php`/`interface-*.php` file under `includes/` won't be visible to PHPUnit
+(or the plugin) until you regenerate it:
+```bash
+npx wp-env run tests-cli --env-cwd=wp-content/plugins/filter-forge composer dump-autoload
+```
+
 **wp-env plugin folder naming:** plugins declared in `.wp-env.json` by zip URL (e.g.
 `https://downloads.wordpress.org/plugin/woocommerce.latest-stable.zip`) get extracted
 into a folder named after the zip's URL slug (`woocommerce.latest-stable`), not the
