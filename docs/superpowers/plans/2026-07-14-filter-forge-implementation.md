@@ -248,8 +248,14 @@ define(
 require_once $_tests_dir . '/includes/functions.php';
 
 function _ff_manually_load_plugin() {
-    require WP_CONTENT_DIR . '/plugins/woocommerce/woocommerce.php';
-    require WP_CONTENT_DIR . '/plugins/elementor/elementor.php';
+    // wp-env names extracted plugin folders after the zip URL slug
+    // (e.g. "woocommerce.latest-stable"), not the plugin's own slug, so the
+    // main file is located by glob rather than a hardcoded path.
+    $woocommerce_main = glob( WP_CONTENT_DIR . '/plugins/woocommerce*/woocommerce.php' );
+    $elementor_main    = glob( WP_CONTENT_DIR . '/plugins/elementor*/elementor.php' );
+
+    require $woocommerce_main[0];
+    require $elementor_main[0];
     require dirname( __DIR__ ) . '/filter-forge.php';
 }
 tests_add_filter( 'muplugins_loaded', '_ff_manually_load_plugin' );

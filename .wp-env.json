@@ -1,0 +1,11 @@
+{
+    "core": null,
+    "plugins": [
+        "./filter-forge",
+        "https://downloads.wordpress.org/plugin/woocommerce.latest-stable.zip",
+        "https://downloads.wordpress.org/plugin/elementor.latest-stable.zip"
+    ],
+    "config": {
+        "WP_DEBUG": true
+    }
+}
