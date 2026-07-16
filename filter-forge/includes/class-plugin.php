@@ -4,6 +4,18 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once __DIR__ . '/services/class-filter-state.php';
+require_once __DIR__ . '/services/class-category-filter.php';
+require_once __DIR__ . '/services/class-meta-filter.php';
+require_once __DIR__ . '/services/class-query-manager.php';
+require_once __DIR__ . '/services/interface-count-provider.php';
+require_once __DIR__ . '/services/class-count-service.php';
+require_once __DIR__ . '/services/class-relationship-resolver.php';
+require_once __DIR__ . '/providers/interface-option-provider.php';
+require_once __DIR__ . '/providers/class-taxonomy-provider.php';
+require_once __DIR__ . '/providers/class-meta-provider.php';
+require_once __DIR__ . '/admin/class-requirements-notice.php';
+
 class FF_Plugin {
 
     private static ?FF_Plugin $instance = null;
@@ -66,6 +78,11 @@ class FF_Plugin {
     }
 
     public function register_widgets( $widgets_manager ): void {
+        require_once __DIR__ . '/widgets/class-widget-base.php';
+        require_once __DIR__ . '/widgets/class-widget-filter.php';
+        require_once __DIR__ . '/widgets/class-widget-price.php';
+        require_once __DIR__ . '/widgets/class-widget-reset.php';
+
         $widgets_manager->register( new FF_Widget_Filter() );
         $widgets_manager->register( new FF_Widget_Price() );
         $widgets_manager->register( new FF_Widget_Reset() );

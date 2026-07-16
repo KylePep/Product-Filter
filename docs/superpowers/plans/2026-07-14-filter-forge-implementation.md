@@ -176,14 +176,25 @@ define( 'FF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'FF_VERSION', '0.1.0' );
 
-if ( file_exists( FF_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
-    require_once FF_PLUGIN_DIR . 'vendor/autoload.php';
-}
-
 require_once FF_PLUGIN_DIR . 'includes/class-plugin.php';
 
 add_action( 'plugins_loaded', array( 'FF_Plugin', 'boot' ) );
 ```
+
+**Correction found during Task 17's manual verification, applied retroactively:** an
+earlier version of this file loaded `vendor/autoload.php` if present, and
+`class-plugin.php` relied on Composer's `classmap` autoloading (regenerated via
+`composer dump-autoload`) to find every `FF_*` class, rather than the explicit
+`require_once` calls in Task 11 below. This worked, but meant every single front-end
+and admin page load pulled in Composer's autoloader — and with it, stat calls across
+all 1,193 files in `vendor/` (PHPUnit and ~27 transitive dev-only dependencies that
+the live plugin never needs). On a Windows host, `vendor/` sits on the
+bind-mounted filesystem, and Docker's cross-filesystem I/O for that many files was
+the dominant cause of the dev site feeling unusably slow. Fix: `filter-forge.php`
+never loads `vendor/autoload.php`, and `class-plugin.php` (Task 11) `require_once`s
+every service/provider/admin file explicitly instead. `vendor/` still exists — it's
+needed for `vendor/bin/phpunit` to run itself — it just isn't loaded by the plugin
+on ordinary requests anymore.
 
 - [ ] **Step 3: Create composer.json for autoloading and dev dependencies**
 

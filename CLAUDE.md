@@ -59,13 +59,21 @@ through an `npm run` script, prefix it with `MSYS_NO_PATHCONV=1` — Git Bash's 
 layer otherwise rewrites POSIX-looking paths like `/var/www/html/...` into a mangled
 Windows path before Docker ever sees them.
 
-**New PHP class files need an autoload dump:** `includes/` is autoloaded via
-Composer's `classmap`, which is generated once at install time — adding a new
-`class-*.php`/`interface-*.php` file under `includes/` won't be visible to PHPUnit
-(or the plugin) until you regenerate it:
-```bash
-npx wp-env run tests-cli --env-cwd=wp-content/plugins/filter-forge composer dump-autoload
-```
+**The plugin does not load `vendor/autoload.php` at runtime — new files need an
+explicit `require_once`.** `composer.json`'s `classmap` autoloading was used early on
+during development, but `filter-forge.php` no longer loads Composer's autoloader at
+all: on the dev site, `vendor/` (1,193 files — PHPUnit and its ~27 transitive
+dev-only dependencies, none of which the live plugin needs) sits on the
+bind-mounted Windows filesystem, and stat-ing all of it through Docker's slow
+cross-filesystem I/O on *every single page load* was the dominant cause of the dev
+site feeling sluggish. Fix: `includes/class-plugin.php` now `require_once`s every
+service/provider/admin file explicitly (in dependency order — interfaces before their
+implementations), and widget files are `require_once`d lazily inside
+`register_widgets()`, since they extend `\Elementor\Widget_Base` and must not load
+before Elementor does. When adding a new class file under `includes/`, add its
+`require_once` to `class-plugin.php` (or to `register_widgets()` for widgets) — there
+is no autoload step to run. `vendor/` still exists solely so `vendor/bin/phpunit`
+can run itself and its own dependencies; it is otherwise dead weight on the dev site.
 
 **wp-env plugin folder naming:** plugins declared in `.wp-env.json` by zip URL (e.g.
 `https://downloads.wordpress.org/plugin/woocommerce.latest-stable.zip`) get extracted

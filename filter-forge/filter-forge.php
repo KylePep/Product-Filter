@@ -16,10 +16,6 @@ define( 'FF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'FF_VERSION', '0.1.0' );
 
-if ( file_exists( FF_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
-    require_once FF_PLUGIN_DIR . 'vendor/autoload.php';
-}
-
 require_once FF_PLUGIN_DIR . 'includes/class-plugin.php';
 
 add_action( 'plugins_loaded', array( 'FF_Plugin', 'boot' ) );
