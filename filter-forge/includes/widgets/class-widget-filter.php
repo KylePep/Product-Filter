@@ -11,7 +11,7 @@ class FF_Widget_Filter extends FF_Widget_Base {
     }
 
     public function get_title(): string {
-        return __( 'Filter', 'filter-forge' );
+        return __( 'Filter - Forge', 'filter-forge' );
     }
 
     public function get_icon(): string {
@@ -86,6 +86,46 @@ class FF_Widget_Filter extends FF_Widget_Base {
         );
 
         $this->add_control(
+            'ff_option_icon_active',
+            array(
+                'label'       => __( 'Active Icon', 'filter-forge' ),
+                'type'        => \Elementor\Controls_Manager::ICONS,
+                'description' => __( 'Shown when this option is selected. Set both this and the Inactive Icon to replace the checkbox/radio input with icons; leave either empty to keep the normal input.', 'filter-forge' ),
+                'condition'   => array( 'ff_display_style' => array( 'checkbox', 'radio' ) ),
+            )
+        );
+
+        $this->add_control(
+            'ff_option_icon_active_color',
+            array(
+                'label'     => __( 'Active Icon Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#ffffff',
+                'condition' => array( 'ff_display_style' => array( 'checkbox', 'radio' ) ),
+            )
+        );
+
+        $this->add_control(
+            'ff_option_icon_inactive',
+            array(
+                'label'       => __( 'Inactive Icon', 'filter-forge' ),
+                'type'        => \Elementor\Controls_Manager::ICONS,
+                'description' => __( 'Shown when this option is not selected.', 'filter-forge' ),
+                'condition'   => array( 'ff_display_style' => array( 'checkbox', 'radio' ) ),
+            )
+        );
+
+        $this->add_control(
+            'ff_option_icon_inactive_color',
+            array(
+                'label'     => __( 'Inactive Icon Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#555555',
+                'condition' => array( 'ff_display_style' => array( 'checkbox', 'radio' ) ),
+            )
+        );
+
+        $this->add_control(
             'ff_show_counts',
             array(
                 'label'   => __( 'Show counts', 'filter-forge' ),
@@ -103,8 +143,18 @@ class FF_Widget_Filter extends FF_Widget_Base {
             )
         );
 
+        $this->add_control(
+            'ff_show_clear',
+            array(
+                'label'   => __( 'Show Clear button', 'filter-forge' ),
+                'type'    => \Elementor\Controls_Manager::SWITCHER,
+                'default' => '',
+            )
+        );
+
         $this->end_controls_section();
 
+        $this->register_header_controls();
         $this->register_relationship_controls();
     }
 
@@ -135,6 +185,8 @@ class FF_Widget_Filter extends FF_Widget_Base {
             return;
         }
 
+        $this->render_header();
+
         $source_type = $settings['ff_source_type'] ?? 'taxonomy';
         $taxonomy    = $settings['ff_taxonomy'] ?? '';
         $meta_key    = $settings['ff_meta_key'] ?? '';
@@ -155,13 +207,9 @@ class FF_Widget_Filter extends FF_Widget_Base {
         $hide_zero    = 'yes' === ( $settings['ff_hide_zero_results'] ?? 'yes' );
         $filter_key   = $settings['ff_filter_key'] ?? '';
         $relationship = $this->get_relationship_config();
+        $style        = $settings['ff_display_style'] ?? 'checkbox';
 
-        echo '<ul class="ff-filter ff-filter--' . esc_attr( $settings['ff_display_style'] ?? 'checkbox' ) . '"'
-            . ' data-ff-filter-key="' . esc_attr( $filter_key ) . '"'
-            . ' data-ff-param="' . esc_attr( $param ) . '"'
-            . ' data-ff-parent-key="' . esc_attr( $relationship['parent_key'] ) . '"'
-            . ' data-ff-reset-on-change="' . ( $relationship['reset_on_change'] ? 'yes' : 'no' ) . '">';
-
+        $visible_options = array();
         foreach ( $options as $option ) {
             $count = $show_counts || $hide_zero
                 ? $this->count_for_option( $param, $option['value'] )
@@ -171,25 +219,124 @@ class FF_Widget_Filter extends FF_Widget_Base {
                 continue;
             }
 
-            printf(
-                '<li><label><input type="checkbox" value="%1$s" data-ff-param="%2$s" %3$s /> %4$s%5$s</label></li>',
-                esc_attr( $option['value'] ),
-                esc_attr( $param ),
-                checked( in_array( $option['value'], $selected, true ), true, false ),
-                esc_html( $option['label'] ),
-                $show_counts ? ' (' . (int) $count . ')' : ''
-            );
+            $option['count']    = $count;
+            $visible_options[] = $option;
         }
 
-        echo '</ul>';
+        $wrapper_attrs = ' data-ff-filter-key="' . esc_attr( $filter_key ) . '"'
+            . ' data-ff-param="' . esc_attr( $param ) . '"'
+            . ' data-ff-parent-key="' . esc_attr( $relationship['parent_key'] ) . '"'
+            . ' data-ff-reset-on-change="' . ( $relationship['reset_on_change'] ? 'yes' : 'no' ) . '"';
 
-        if ( ! empty( $selected ) ) {
+        if ( 'dropdown' === $style ) {
+            $this->render_dropdown( $param, $visible_options, $selected, $show_counts, $wrapper_attrs );
+        } else {
+            $this->render_list( $style, $param, $visible_options, $selected, $show_counts, $wrapper_attrs );
+        }
+
+        $show_clear = 'yes' === ( $settings['ff_show_clear'] ?? '' );
+
+        if ( $show_clear && ! empty( $selected ) ) {
             printf(
                 '<button type="button" class="ff-filter__clear" data-ff-param="%1$s">%2$s</button>',
                 esc_attr( $param ),
                 esc_html__( 'Clear', 'filter-forge' )
             );
         }
+    }
+
+    /**
+     * checkbox/swatch/toggle are all multi-select (same input type, styled
+     * differently via CSS); radio is single-select, grouped by `name` so the
+     * browser enforces exclusivity.
+     */
+    private function render_list( string $style, string $param, array $options, array $selected, bool $show_counts, string $wrapper_attrs ): void {
+        $input_type = 'radio' === $style ? 'radio' : 'checkbox';
+        $name_attr  = 'radio' === $style ? ' name="ff-radio-' . esc_attr( $param ) . '"' : '';
+
+        $active_icon    = array();
+        $inactive_icon  = array();
+        $active_color   = '#ffffff';
+        $inactive_color = '#555555';
+
+        if ( in_array( $style, array( 'checkbox', 'radio' ), true ) ) {
+            $settings       = $this->get_settings_for_display();
+            $active_icon    = $settings['ff_option_icon_active'] ?? array();
+            $inactive_icon  = $settings['ff_option_icon_inactive'] ?? array();
+            $active_color   = $settings['ff_option_icon_active_color'] ?? $active_color;
+            $inactive_color = $settings['ff_option_icon_inactive_color'] ?? $inactive_color;
+        }
+
+        // Both icons are required -- a half-configured pair would leave one state with no visual at all.
+        $has_icon = ! empty( $active_icon['value'] ) && ! empty( $inactive_icon['value'] );
+
+        echo '<ul class="ff-filter ff-filter--' . esc_attr( $style ) . ( $has_icon ? ' ff-filter--icon' : '' ) . '"' . $wrapper_attrs . '>';
+
+        foreach ( $options as $option ) {
+            if ( ! $has_icon ) {
+                printf(
+                    '<li><label><input type="%1$s"%2$s value="%3$s" data-ff-param="%4$s" %5$s /> %6$s%7$s</label></li>',
+                    esc_attr( $input_type ),
+                    $name_attr,
+                    esc_attr( $option['value'] ),
+                    esc_attr( $param ),
+                    checked( in_array( $option['value'], $selected, true ), true, false ),
+                    esc_html( $option['label'] ),
+                    $show_counts ? ' (' . (int) $option['count'] . ')' : ''
+                );
+                continue;
+            }
+
+            $is_checked = in_array( $option['value'], $selected, true );
+
+            echo '<li><label class="ff-filter__option">';
+
+            printf(
+                '<input type="%1$s"%2$s value="%3$s" data-ff-param="%4$s" class="ff-filter__input--icon-mode" %5$s />',
+                esc_attr( $input_type ),
+                $name_attr,
+                esc_attr( $option['value'] ),
+                esc_attr( $param ),
+                checked( $is_checked, true, false )
+            );
+
+            \Elementor\Icons_Manager::render_icon(
+                $is_checked ? $active_icon : $inactive_icon,
+                array(
+                    'class'       => 'ff-filter__option-icon',
+                    'style'       => 'color:' . esc_attr( $is_checked ? $active_color : $inactive_color ) . ' !important;',
+                    'aria-hidden' => 'true',
+                )
+            );
+
+            printf(
+                ' %1$s%2$s</label></li>',
+                esc_html( $option['label'] ),
+                $show_counts ? ' (' . (int) $option['count'] . ')' : ''
+            );
+        }
+
+        echo '</ul>';
+    }
+
+    private function render_dropdown( string $param, array $options, array $selected, bool $show_counts, string $wrapper_attrs ): void {
+        $selected_value = $selected[0] ?? '';
+
+        echo '<select class="ff-filter ff-filter--dropdown"' . $wrapper_attrs . ' data-ff-param="' . esc_attr( $param ) . '">';
+
+        printf( '<option value="">%s</option>', esc_html__( 'All', 'filter-forge' ) );
+
+        foreach ( $options as $option ) {
+            printf(
+                '<option value="%1$s" %2$s>%3$s%4$s</option>',
+                esc_attr( $option['value'] ),
+                selected( $option['value'], $selected_value, false ),
+                esc_html( $option['label'] ),
+                $show_counts ? ' (' . (int) $option['count'] . ')' : ''
+            );
+        }
+
+        echo '</select>';
     }
 
     private function render_unsupported_page_notice(): void {

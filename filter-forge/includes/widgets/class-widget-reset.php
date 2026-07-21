@@ -11,7 +11,7 @@ class FF_Widget_Reset extends \Elementor\Widget_Base {
     }
 
     public function get_title(): string {
-        return __( 'Reset Filters', 'filter-forge' );
+        return __( 'Reset Filters - Forge', 'filter-forge' );
     }
 
     public function get_icon(): string {
