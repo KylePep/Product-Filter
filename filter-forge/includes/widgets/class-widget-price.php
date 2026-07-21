@@ -11,7 +11,7 @@ class FF_Widget_Price extends FF_Widget_Base {
     }
 
     public function get_title(): string {
-        return __( 'Price Filter', 'filter-forge' );
+        return __( 'Price Filter - Forge', 'filter-forge' );
     }
 
     public function get_icon(): string {
@@ -32,9 +32,10 @@ class FF_Widget_Price extends FF_Widget_Base {
             array(
                 'label'   => __( 'Mode', 'filter-forge' ),
                 'type'    => \Elementor\Controls_Manager::SELECT,
-                'default' => 'slider',
+                'default' => 'input',
                 'options' => array(
-                    'slider'  => __( 'Slider (dynamic min/max)', 'filter-forge' ),
+                    'input'   => __( 'Min/Max Inputs', 'filter-forge' ),
+                    'slider'  => __( 'Slider', 'filter-forge' ),
                     'buckets' => __( 'Predefined buckets', 'filter-forge' ),
                 ),
             )
@@ -62,8 +63,84 @@ class FF_Widget_Price extends FF_Widget_Base {
             )
         );
 
+        $this->add_control(
+            'ff_price_bucket_style',
+            array(
+                'label'     => __( 'Bucket Display Style', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::SELECT,
+                'default'   => 'list',
+                'options'   => array(
+                    'list'     => __( 'List', 'filter-forge' ),
+                    'dropdown' => __( 'Dropdown', 'filter-forge' ),
+                ),
+                'condition' => array( 'ff_price_mode' => 'buckets' ),
+            )
+        );
+
+        $this->add_control(
+            'ff_bucket_icon_active',
+            array(
+                'label'       => __( 'Active Icon', 'filter-forge' ),
+                'type'        => \Elementor\Controls_Manager::ICONS,
+                'description' => __( 'Optional. Shown after the label when this bucket is selected. Set both this and the Inactive Icon to show one; leave either empty for text only.', 'filter-forge' ),
+                'condition'   => array(
+                    'ff_price_mode'         => 'buckets',
+                    'ff_price_bucket_style' => 'list',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_bucket_icon_inactive',
+            array(
+                'label'       => __( 'Inactive Icon', 'filter-forge' ),
+                'type'        => \Elementor\Controls_Manager::ICONS,
+                'description' => __( 'Shown after the label when this bucket is not selected.', 'filter-forge' ),
+                'condition'   => array(
+                    'ff_price_mode'         => 'buckets',
+                    'ff_price_bucket_style' => 'list',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_bucket_active_color',
+            array(
+                'label'     => __( 'Active Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#2271b1',
+                'condition' => array(
+                    'ff_price_mode'         => 'buckets',
+                    'ff_price_bucket_style' => 'list',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_bucket_inactive_color',
+            array(
+                'label'     => __( 'Inactive Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#3c3c3c',
+                'condition' => array(
+                    'ff_price_mode'         => 'buckets',
+                    'ff_price_bucket_style' => 'list',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_show_clear',
+            array(
+                'label'   => __( 'Show Clear button', 'filter-forge' ),
+                'type'    => \Elementor\Controls_Manager::SWITCHER,
+                'default' => '',
+            )
+        );
+
         $this->end_controls_section();
 
+        $this->register_header_controls();
         $this->register_relationship_controls();
     }
 
@@ -82,27 +159,54 @@ class FF_Widget_Price extends FF_Widget_Base {
             return;
         }
 
+        $this->render_header();
+
         $current_min = $plugin->filter_state->get( 'min_price' );
         $current_max = $plugin->filter_state->get( 'max_price' );
+        $show_clear  = 'yes' === ( $settings['ff_show_clear'] ?? '' );
 
-        if ( 'buckets' === ( $settings['ff_price_mode'] ?? 'slider' ) ) {
-            $this->render_buckets( $settings['ff_price_buckets'] ?? array(), $current_min, $current_max );
+        if ( 'buckets' === ( $settings['ff_price_mode'] ?? 'input' ) ) {
+            $style = $settings['ff_price_bucket_style'] ?? 'list';
+            if ( 'dropdown' === $style ) {
+                $this->render_buckets_dropdown( $settings['ff_price_buckets'] ?? array(), $current_min, $current_max );
+            } else {
+                $this->render_buckets_list( $settings['ff_price_buckets'] ?? array(), $current_min, $current_max );
+            }
         } else {
-            $this->render_slider( $current_min, $current_max );
+            $this->render_min_max_inputs( $current_min, $current_max );
         }
 
-        if ( null !== $current_min || null !== $current_max ) {
+        if ( $show_clear && ( null !== $current_min || null !== $current_max ) ) {
             echo '<button type="button" class="ff-price__clear" data-ff-param="min_price" data-ff-param-secondary="max_price">'
                 . esc_html__( 'Clear', 'filter-forge' ) . '</button>';
         }
     }
 
-    private function render_buckets( array $buckets, ?string $current_min, ?string $current_max ): void {
+    /**
+     * @return array{0: string, 1: string} [min, max] as literal strings, matching
+     * how FF_Filter_State reads them back from the query string.
+     */
+    private function bucket_min_max( array $bucket ): array {
+        $min = isset( $bucket['min'] ) ? (string) $bucket['min'] : '';
+        $max = isset( $bucket['max'] ) && '' !== $bucket['max'] ? (string) $bucket['max'] : '';
+
+        return array( $min, $max );
+    }
+
+    private function render_buckets_list( array $buckets, ?string $current_min, ?string $current_max ): void {
+        $settings       = $this->get_settings_for_display();
+        $active_icon    = $settings['ff_bucket_icon_active'] ?? array();
+        $inactive_icon  = $settings['ff_bucket_icon_inactive'] ?? array();
+        $active_color   = $settings['ff_bucket_active_color'] ?? '#2271b1';
+        $inactive_color = $settings['ff_bucket_inactive_color'] ?? '#3c3c3c';
+
+        // Both icons are required -- a half-configured pair would leave one state with no visual at all.
+        $has_icon = ! empty( $active_icon['value'] ) && ! empty( $inactive_icon['value'] );
+
         echo '<ul class="ff-price ff-price--buckets">';
 
         foreach ( $buckets as $bucket ) {
-            $min = isset( $bucket['min'] ) ? (string) $bucket['min'] : '';
-            $max = isset( $bucket['max'] ) && '' !== $bucket['max'] ? (string) $bucket['max'] : '';
+            [ $min, $max ] = $this->bucket_min_max( $bucket );
 
             $url = add_query_arg(
                 array_filter(
@@ -117,19 +221,55 @@ class FF_Widget_Price extends FF_Widget_Base {
             );
 
             $is_active = $current_min === $min && $current_max === $max;
+            $color     = $is_active ? $active_color : $inactive_color;
 
             printf(
-                '<li><a href="%1$s" class="%2$s">%3$s</a></li>',
+                '<li><a href="%1$s" class="ff-price__bucket%2$s" style="color:%3$s !important;">%4$s',
                 esc_url( $url ),
-                $is_active ? 'ff-price__bucket--active' : '',
+                $is_active ? ' ff-price__bucket--active' : '',
+                esc_attr( $color ),
                 esc_html( $bucket['label'] ?? '' )
             );
+
+            if ( $has_icon ) {
+                \Elementor\Icons_Manager::render_icon(
+                    $is_active ? $active_icon : $inactive_icon,
+                    array(
+                        'class'       => 'ff-price__bucket-icon',
+                        'style'       => 'color:' . esc_attr( $color ) . ' !important;',
+                        'aria-hidden' => 'true',
+                    )
+                );
+            }
+
+            echo '</a></li>';
         }
 
         echo '</ul>';
     }
 
-    private function render_slider( ?string $current_min, ?string $current_max ): void {
+    private function render_buckets_dropdown( array $buckets, ?string $current_min, ?string $current_max ): void {
+        echo '<select class="ff-price ff-price--buckets-dropdown">';
+
+        printf( '<option value="">%s</option>', esc_html__( 'All Prices', 'filter-forge' ) );
+
+        foreach ( $buckets as $bucket ) {
+            [ $min, $max ] = $this->bucket_min_max( $bucket );
+            $is_active     = $current_min === $min && $current_max === $max;
+
+            printf(
+                '<option value="%1$s|%2$s" %3$s>%4$s</option>',
+                esc_attr( $min ),
+                esc_attr( $max ),
+                selected( $is_active, true, false ),
+                esc_html( $bucket['label'] ?? '' )
+            );
+        }
+
+        echo '</select>';
+    }
+
+    private function get_price_bounds(): object {
         global $wpdb;
 
         $bounds = $wpdb->get_row(
@@ -141,12 +281,33 @@ class FF_Widget_Price extends FF_Widget_Base {
             AND p.post_status = 'publish'"
         );
 
+        return (object) array(
+            'min_price' => $bounds->min_price ?? '0',
+            'max_price' => $bounds->max_price ?? '0',
+        );
+    }
+
+    /**
+     * Literal min/max number input pair -- matches the design's "render
+     * links/inputs with literal min_price/max_price values" approach used by
+     * every other filter in the plugin.
+     */
+    private function render_min_max_inputs( ?string $current_min, ?string $current_max ): void {
+        $bounds = $this->get_price_bounds();
+
         printf(
-            '<div class="ff-price ff-price--slider" data-ff-min="%1$s" data-ff-max="%2$s" data-ff-current-min="%3$s" data-ff-current-max="%4$s"></div>',
-            esc_attr( $bounds->min_price ?? '0' ),
-            esc_attr( $bounds->max_price ?? '0' ),
-            esc_attr( $current_min ?? $bounds->min_price ?? '0' ),
-            esc_attr( $current_max ?? $bounds->max_price ?? '0' )
+            '<div class="ff-price ff-price--input">
+                <label>%1$s <input type="number" class="ff-price__input" data-ff-price-role="min" min="%3$s" max="%4$s" step="any" value="%5$s" /></label>
+                <label>%2$s <input type="number" class="ff-price__input" data-ff-price-role="max" min="%3$s" max="%4$s" step="any" value="%6$s" /></label>
+                <button type="button" class="ff-price__apply">%7$s</button>
+            </div>',
+            esc_html__( 'Min', 'filter-forge' ),
+            esc_html__( 'Max', 'filter-forge' ),
+            esc_attr( $bounds->min_price ),
+            esc_attr( $bounds->max_price ),
+            esc_attr( $current_min ?? $bounds->min_price ),
+            esc_attr( $current_max ?? $bounds->max_price ),
+            esc_html__( 'Apply', 'filter-forge' )
         );
     }
 }

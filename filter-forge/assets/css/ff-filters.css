@@ -1,3 +1,15 @@
+.ff-filter__header {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    margin: 0 0 0.5em;
+    font-weight: 600;
+}
+
+.ff-filter__header-icon {
+    flex: 0 0 auto;
+}
+
 .ff-filter {
     list-style: none;
     margin: 0;
@@ -8,12 +20,152 @@
     margin: 0 0 0.5em;
 }
 
+.ff-filter__input--icon-mode {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.ff-filter--icon .ff-filter__option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    cursor: pointer;
+}
+
+.ff-filter--icon .ff-filter__option-icon {
+    flex: 0 0 auto;
+}
+
+select.ff-filter--dropdown {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+
+.ff-filter--swatch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+
+.ff-filter--swatch li {
+    margin: 0;
+}
+
+.ff-filter--swatch label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5em;
+    padding: 0 0.75em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.ff-filter--swatch input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.ff-filter--swatch label:has(input:checked) {
+    border-color: #2271b1;
+    background: #e7f1fa;
+}
+
+.ff-filter--toggle li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75em;
+}
+
+.ff-filter--toggle label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.75em;
+    cursor: pointer;
+}
+
+.ff-filter--toggle input {
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    flex: 0 0 auto;
+    width: 2.25em;
+    height: 1.25em;
+    margin: 0;
+    border-radius: 999px;
+    background: #ccc;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.15s ease;
+}
+
+.ff-filter--toggle input::before {
+    content: "";
+    position: absolute;
+    top: 0.15em;
+    left: 0.15em;
+    width: 0.95em;
+    height: 0.95em;
+    border-radius: 50%;
+    background: #fff;
+    transition: left 0.15s ease;
+}
+
+.ff-filter--toggle input:checked {
+    background: #2271b1;
+}
+
+.ff-filter--toggle input:checked::before {
+    left: 1.15em;
+}
+
 .ff-price--buckets {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
+.ff-price__bucket {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+}
+
 .ff-price__bucket--active {
     font-weight: bold;
+}
+
+select.ff-price--buckets-dropdown {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+
+.ff-price--input {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75em;
+}
+
+.ff-price--input label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+    font-size: 0.85em;
+}
+
+.ff-price__input {
+    width: 6em;
 }
