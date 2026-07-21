@@ -111,8 +111,18 @@ filters). Concretely:
   **native** `filter_{taxonomy}` param — WooCommerce's own handling applies, Filter
   Forge does nothing. `FF_Category_Filter::resolve_param()` is the single place that
   decides native-vs-custom for a given taxonomy.
-- **Every other taxonomy** (`product_cat`, `product_tag`, custom ones like
-  `product_brand`) uses `ff_tax_{taxonomy}`, handled by `FF_Category_Filter`.
+- **Every other taxonomy** (`product_tag`, custom ones like `product_brand`) uses
+  `ff_tax_{taxonomy}`, handled by `FF_Category_Filter`. **Exception:** `product_cat`
+  gets the bare, unprefixed `category` param instead of `ff_tax_product_cat` — it's
+  WooCommerce's own core taxonomy, and site nav/links commonly assume `?category=`
+  already works. This alias is a hardcoded special case in
+  `FF_Category_Filter::NATIVE_PARAM_ALIASES`, not a general mechanism — a new taxonomy
+  doesn't get one without deliberately adding it there.
+- `FF_Taxonomy_Provider::get_options()` excludes the taxonomy term of the archive
+  page currently being viewed (and its ancestors) from the option list — e.g. on
+  `/product-category/airsoft-guns/`, the Category filter widget for `product_cat`
+  won't list "Airsoft Guns" itself, since the archive already narrows to it and
+  re-offering it as a filter option is redundant.
 - **Meta/custom-field filters** use `ff_{meta_key}` directly — the param name *is*
   the meta key. `FF_Meta_Filter` treats any `ff_`-prefixed param that isn't
   `ff_tax_*` as a meta filter. This means `pre_get_posts` (which fires before

@@ -3,9 +3,30 @@
 class Test_FF_Category_Filter extends WP_UnitTestCase {
 
     public function test_apply_adds_tax_query_for_ff_tax_prefixed_param() {
+        self::factory()->term->create( array( 'taxonomy' => 'product_tag', 'name' => 'Pistols', 'slug' => 'pistols' ) );
+
+        $state  = new FF_Filter_State( array( 'ff_tax_product_tag' => 'pistols,rifles' ) );
+        $filter = new FF_Category_Filter( $state );
+        $query  = new WP_Query();
+
+        $filter->apply( $query );
+
+        $this->assertSame(
+            array(
+                array(
+                    'taxonomy' => 'product_tag',
+                    'field'    => 'slug',
+                    'terms'    => array( 'pistols', 'rifles' ),
+                ),
+            ),
+            $query->get( 'tax_query' )
+        );
+    }
+
+    public function test_apply_adds_tax_query_for_native_category_alias_param() {
         self::factory()->term->create( array( 'taxonomy' => 'product_cat', 'name' => 'Pistols', 'slug' => 'pistols' ) );
 
-        $state  = new FF_Filter_State( array( 'ff_tax_product_cat' => 'pistols,rifles' ) );
+        $state  = new FF_Filter_State( array( 'category' => 'pistols,rifles' ) );
         $filter = new FF_Category_Filter( $state );
         $query  = new WP_Query();
 
@@ -44,7 +65,11 @@ class Test_FF_Category_Filter extends WP_UnitTestCase {
     }
 
     public function test_resolve_param_uses_ff_tax_prefix_for_non_attribute_taxonomies() {
-        $this->assertSame( 'ff_tax_product_cat', FF_Category_Filter::resolve_param( 'product_cat' ) );
+        $this->assertSame( 'ff_tax_product_tag', FF_Category_Filter::resolve_param( 'product_tag' ) );
+    }
+
+    public function test_resolve_param_uses_native_category_alias_for_product_cat() {
+        $this->assertSame( 'category', FF_Category_Filter::resolve_param( 'product_cat' ) );
     }
 
     public function test_resolve_param_uses_native_filter_prefix_for_attribute_taxonomies() {

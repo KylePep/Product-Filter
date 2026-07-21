@@ -6,6 +6,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class FF_Category_Filter {
 
+    /**
+     * Non-attribute taxonomies with a dedicated, non-prefixed query param
+     * instead of the generic ff_tax_{taxonomy} scheme -- product_cat is
+     * WooCommerce's core taxonomy and gets the plain, WooCommerce-native
+     * "category" param that themes/nav links already expect.
+     */
+    private const NATIVE_PARAM_ALIASES = array(
+        'product_cat' => 'category',
+    );
+
     private FF_Filter_State $filter_state;
 
     public function __construct( FF_Filter_State $filter_state ) {
@@ -19,12 +29,12 @@ class FF_Category_Filter {
         }
 
         foreach ( $this->filter_state->all() as $param => $value ) {
-            if ( '' === $value || 0 !== strpos( $param, 'ff_tax_' ) ) {
+            if ( '' === $value ) {
                 continue;
             }
 
-            $taxonomy = substr( $param, strlen( 'ff_tax_' ) );
-            if ( ! taxonomy_exists( $taxonomy ) ) {
+            $taxonomy = self::taxonomy_for_param( $param );
+            if ( null === $taxonomy || ! taxonomy_exists( $taxonomy ) ) {
                 continue;
             }
 
@@ -45,6 +55,23 @@ class FF_Category_Filter {
             return 'filter_' . $taxonomy;
         }
 
+        if ( isset( self::NATIVE_PARAM_ALIASES[ $taxonomy ] ) ) {
+            return self::NATIVE_PARAM_ALIASES[ $taxonomy ];
+        }
+
         return 'ff_tax_' . $taxonomy;
+    }
+
+    private static function taxonomy_for_param( string $param ): ?string {
+        $aliased_taxonomy = array_search( $param, self::NATIVE_PARAM_ALIASES, true );
+        if ( false !== $aliased_taxonomy ) {
+            return $aliased_taxonomy;
+        }
+
+        if ( 0 === strpos( $param, 'ff_tax_' ) ) {
+            return substr( $param, strlen( 'ff_tax_' ) );
+        }
+
+        return null;
     }
 }
