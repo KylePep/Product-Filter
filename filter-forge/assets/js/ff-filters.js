@@ -8,6 +8,67 @@ function ffApplyPriceRange( wrapper ) {
     FFUrl.navigate( params );
 }
 
+function ffClampSliderHandles( wrapper, changedRole ) {
+    const minInput = wrapper.querySelector( '[data-ff-price-role="min"]' );
+    const maxInput = wrapper.querySelector( '[data-ff-price-role="max"]' );
+
+    if ( ! minInput || ! maxInput ) {
+        return;
+    }
+
+    if ( parseFloat( minInput.value ) > parseFloat( maxInput.value ) ) {
+        if ( 'min' === changedRole ) {
+            minInput.value = maxInput.value;
+        } else {
+            maxInput.value = minInput.value;
+        }
+    }
+}
+
+function ffUpdateSliderVisual( wrapper ) {
+    const minInput = wrapper.querySelector( '[data-ff-price-role="min"]' );
+    const maxInput = wrapper.querySelector( '[data-ff-price-role="max"]' );
+    const range    = wrapper.querySelector( '.ff-price__slider-range' );
+    const minLabel = wrapper.querySelector( '[data-ff-slider-display="min"]' );
+    const maxLabel = wrapper.querySelector( '[data-ff-slider-display="max"]' );
+
+    if ( ! minInput || ! maxInput || ! range ) {
+        return;
+    }
+
+    const boundMin = parseFloat( minInput.min );
+    const boundMax = parseFloat( minInput.max );
+    const span     = Math.max( boundMax - boundMin, 1 );
+
+    const minVal = parseFloat( minInput.value );
+    const maxVal = parseFloat( maxInput.value );
+
+    range.style.left  = ( ( minVal - boundMin ) / span * 100 ) + '%';
+    range.style.width = ( ( maxVal - minVal ) / span * 100 ) + '%';
+
+    if ( minLabel ) {
+        minLabel.textContent = minInput.value;
+    }
+    if ( maxLabel ) {
+        maxLabel.textContent = maxInput.value;
+    }
+}
+
+document.addEventListener( 'input', function ( event ) {
+    const rangeInput = event.target.closest( '.ff-price__range' );
+    if ( ! rangeInput ) {
+        return;
+    }
+
+    const wrapper = rangeInput.closest( '.ff-price--slider' );
+    if ( ! wrapper ) {
+        return;
+    }
+
+    ffClampSliderHandles( wrapper, rangeInput.getAttribute( 'data-ff-price-role' ) );
+    ffUpdateSliderVisual( wrapper );
+} );
+
 document.addEventListener( 'change', function ( event ) {
     const bucketSelect = event.target.closest( '.ff-price--buckets-dropdown' );
     if ( bucketSelect ) {
@@ -55,7 +116,7 @@ document.addEventListener( 'change', function ( event ) {
 document.addEventListener( 'click', function ( event ) {
     const applyBtn = event.target.closest( '.ff-price__apply' );
     if ( applyBtn ) {
-        const wrapper = applyBtn.closest( '.ff-price--input' );
+        const wrapper = applyBtn.closest( '.ff-price--input, .ff-price--slider' );
         if ( wrapper ) {
             ffApplyPriceRange( wrapper );
         }
@@ -82,7 +143,7 @@ document.addEventListener( 'keydown', function ( event ) {
         return;
     }
 
-    const wrapper = event.target.closest( '.ff-price--input' );
+    const wrapper = event.target.closest( '.ff-price--input, .ff-price--slider' );
     if ( ! wrapper ) {
         return;
     }
