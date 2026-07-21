@@ -130,6 +130,36 @@ class FF_Widget_Price extends FF_Widget_Base {
         );
 
         $this->add_control(
+            'ff_slider_track_color',
+            array(
+                'label'     => __( 'Slider Track Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#dcdcde',
+                'condition' => array( 'ff_price_mode' => 'slider' ),
+            )
+        );
+
+        $this->add_control(
+            'ff_slider_range_color',
+            array(
+                'label'     => __( 'Slider Active Range Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#2271b1',
+                'condition' => array( 'ff_price_mode' => 'slider' ),
+            )
+        );
+
+        $this->add_control(
+            'ff_slider_handle_color',
+            array(
+                'label'     => __( 'Slider Handle Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#ffffff',
+                'condition' => array( 'ff_price_mode' => 'slider' ),
+            )
+        );
+
+        $this->add_control(
             'ff_show_clear',
             array(
                 'label'   => __( 'Show Clear button', 'filter-forge' ),
@@ -165,13 +195,17 @@ class FF_Widget_Price extends FF_Widget_Base {
         $current_max = $plugin->filter_state->get( 'max_price' );
         $show_clear  = 'yes' === ( $settings['ff_show_clear'] ?? '' );
 
-        if ( 'buckets' === ( $settings['ff_price_mode'] ?? 'input' ) ) {
+        $mode = $settings['ff_price_mode'] ?? 'input';
+
+        if ( 'buckets' === $mode ) {
             $style = $settings['ff_price_bucket_style'] ?? 'list';
             if ( 'dropdown' === $style ) {
                 $this->render_buckets_dropdown( $settings['ff_price_buckets'] ?? array(), $current_min, $current_max );
             } else {
                 $this->render_buckets_list( $settings['ff_price_buckets'] ?? array(), $current_min, $current_max );
             }
+        } elseif ( 'slider' === $mode ) {
+            $this->render_slider_range( $current_min, $current_max );
         } else {
             $this->render_min_max_inputs( $current_min, $current_max );
         }
@@ -307,6 +341,56 @@ class FF_Widget_Price extends FF_Widget_Base {
             esc_attr( $bounds->max_price ),
             esc_attr( $current_min ?? $bounds->min_price ),
             esc_attr( $current_max ?? $bounds->max_price ),
+            esc_html__( 'Apply', 'filter-forge' )
+        );
+    }
+
+    /**
+     * Real dual-handle range slider: two overlapping native range inputs plus a
+     * server-positioned colored overlay div (so the range looks correct even
+     * before JS runs); JS keeps the overlay/live text in sync while dragging.
+     */
+    private function render_slider_range( ?string $current_min, ?string $current_max ): void {
+        $settings = $this->get_settings_for_display();
+        $bounds   = $this->get_price_bounds();
+
+        $bound_min = (float) $bounds->min_price;
+        $bound_max = (float) $bounds->max_price;
+        $span      = max( $bound_max - $bound_min, 1 );
+
+        $value_min = null !== $current_min ? (float) $current_min : $bound_min;
+        $value_max = null !== $current_max ? (float) $current_max : $bound_max;
+
+        $left  = ( $value_min - $bound_min ) / $span * 100;
+        $width = ( $value_max - $value_min ) / $span * 100;
+
+        $track_color  = $settings['ff_slider_track_color'] ?? '#dcdcde';
+        $range_color  = $settings['ff_slider_range_color'] ?? '#2271b1';
+        $handle_color = $settings['ff_slider_handle_color'] ?? '#ffffff';
+
+        printf(
+            '<div class="ff-price ff-price--slider" style="--ff-slider-track:%1$s;--ff-slider-range:%2$s;--ff-slider-handle:%3$s;">
+                <div class="ff-price__slider-values">
+                    <span data-ff-slider-display="min">%4$s</span> &ndash; <span data-ff-slider-display="max">%5$s</span>
+                </div>
+                <div class="ff-price__slider-track">
+                    <div class="ff-price__slider-range" style="left:%6$s%%;width:%7$s%%;"></div>
+                    <input type="range" class="ff-price__range" data-ff-price-role="min" min="%8$s" max="%9$s" step="1" value="%10$s" />
+                    <input type="range" class="ff-price__range" data-ff-price-role="max" min="%8$s" max="%9$s" step="1" value="%11$s" />
+                </div>
+                <button type="button" class="ff-price__apply">%12$s</button>
+            </div>',
+            esc_attr( $track_color ),
+            esc_attr( $range_color ),
+            esc_attr( $handle_color ),
+            esc_html( (string) round( $value_min ) ),
+            esc_html( (string) round( $value_max ) ),
+            esc_attr( (string) round( $left, 4 ) ),
+            esc_attr( (string) round( $width, 4 ) ),
+            esc_attr( (string) round( $bound_min ) ),
+            esc_attr( (string) round( $bound_max ) ),
+            esc_attr( (string) round( $value_min ) ),
+            esc_attr( (string) round( $value_max ) ),
             esc_html__( 'Apply', 'filter-forge' )
         );
     }
