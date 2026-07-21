@@ -3,14 +3,14 @@ window.FFUrl = ( function () {
         return new URLSearchParams( window.location.search ).get( key );
     }
 
-    function set( key, value ) {
-        const params = new URLSearchParams( window.location.search );
+    function set( key, value, params ) {
+        const target = params || new URLSearchParams( window.location.search );
         if ( value === '' || value === null ) {
-            params.delete( key );
+            target.delete( key );
         } else {
-            params.set( key, value );
+            target.set( key, value );
         }
-        return params;
+        return target;
     }
 
     function remove( key, params ) {
