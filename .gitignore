@@ -4,3 +4,4 @@ wp-content/
 .wp-env-cache/
 filter-forge/.phpunit.result.cache
 .claude/
+*.zip
