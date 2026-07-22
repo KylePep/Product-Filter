@@ -41,6 +41,65 @@ class FF_Widget_Reset extends \Elementor\Widget_Base {
         );
 
         $this->end_controls_section();
+
+        $this->start_controls_section(
+            'ff_reset_style',
+            array(
+                'label' => __( 'Style', 'filter-forge' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            )
+        );
+
+        $this->add_control(
+            'ff_reset_text_color',
+            array(
+                'label'     => __( 'Text Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-reset' => 'color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_reset_text_color_hover',
+            array(
+                'label'     => __( 'Hover Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-reset:hover' => 'color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            array(
+                'name'     => 'ff_reset_typography',
+                'selector' => '{{WRAPPER}} .ff-reset',
+            )
+        );
+
+        $this->add_control(
+            'ff_reset_text_decoration',
+            array(
+                'label'     => __( 'Text Decoration', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::SELECT,
+                'default'   => '',
+                'options'   => array(
+                    ''             => __( 'Default', 'filter-forge' ),
+                    'none'         => __( 'None', 'filter-forge' ),
+                    'underline'    => __( 'Underline', 'filter-forge' ),
+                    'overline'     => __( 'Overline', 'filter-forge' ),
+                    'line-through' => __( 'Line Through', 'filter-forge' ),
+                ),
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-reset' => 'text-decoration: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->end_controls_section();
     }
 
     public static function canonical_url( string $requested_url ): string {
