@@ -104,6 +104,59 @@ class FF_Widget_Price extends FF_Widget_Base {
         );
 
         $this->add_control(
+            'ff_show_clear',
+            array(
+                'label'   => __( 'Show Clear button', 'filter-forge' ),
+                'type'    => \Elementor\Controls_Manager::SWITCHER,
+                'default' => '',
+            )
+        );
+
+        $this->end_controls_section();
+
+        $this->register_header_controls();
+        $this->register_relationship_controls();
+
+        $this->register_text_style_controls();
+        $this->register_button_style_controls();
+
+        $this->start_controls_section(
+            'ff_style_price_clear_spacing',
+            array(
+                'label' => __( 'Clear Button Spacing', 'filter-forge' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            )
+        );
+
+        $this->add_control(
+            'ff_price_clear_margin_top',
+            array(
+                'label'     => __( 'Top Spacing', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::SLIDER,
+                'range'     => array(
+                    'px' => array( 'min' => 0, 'max' => 60 ),
+                ),
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-price__clear' => 'margin-top: {{SIZE}}{{UNIT}};',
+                ),
+                'condition' => array( 'ff_show_clear' => 'yes' ),
+            )
+        );
+
+        $this->end_controls_section();
+
+        $this->register_header_style_controls();
+
+        $this->start_controls_section(
+            'ff_style_bucket_colors',
+            array(
+                'label'     => __( 'Bucket Colors', 'filter-forge' ),
+                'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
+                'condition' => array( 'ff_price_mode' => 'buckets' ),
+            )
+        );
+
+        $this->add_control(
             'ff_bucket_active_color',
             array(
                 'label'     => __( 'Active Color', 'filter-forge' ),
@@ -126,6 +179,17 @@ class FF_Widget_Price extends FF_Widget_Base {
                     'ff_price_mode'         => 'buckets',
                     'ff_price_bucket_style' => 'list',
                 ),
+            )
+        );
+
+        $this->end_controls_section();
+
+        $this->start_controls_section(
+            'ff_style_slider_colors',
+            array(
+                'label'     => __( 'Slider Colors', 'filter-forge' ),
+                'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
+                'condition' => array( 'ff_price_mode' => 'slider' ),
             )
         );
 
@@ -159,19 +223,7 @@ class FF_Widget_Price extends FF_Widget_Base {
             )
         );
 
-        $this->add_control(
-            'ff_show_clear',
-            array(
-                'label'   => __( 'Show Clear button', 'filter-forge' ),
-                'type'    => \Elementor\Controls_Manager::SWITCHER,
-                'default' => '',
-            )
-        );
-
         $this->end_controls_section();
-
-        $this->register_header_controls();
-        $this->register_relationship_controls();
     }
 
     public function render(): void {
