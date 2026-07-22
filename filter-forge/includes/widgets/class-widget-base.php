@@ -160,4 +160,244 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
             'hide_until_selected' => 'yes' === ( $settings['ff_hide_until_parent_selected'] ?? '' ),
         );
     }
+
+    protected function register_text_style_controls(): void {
+        $this->start_controls_section(
+            'ff_style_text',
+            array(
+                'label' => __( 'Text', 'filter-forge' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            )
+        );
+
+        $this->add_control(
+            'ff_text_color',
+            array(
+                'label'     => __( 'Text Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}}' => 'color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            array(
+                'name'     => 'ff_text_typography',
+                'selector' => '{{WRAPPER}}',
+            )
+        );
+
+        $this->end_controls_section();
+    }
+
+    protected function register_button_style_controls(): void {
+        $this->start_controls_section(
+            'ff_style_buttons',
+            array(
+                'label' => __( 'Buttons', 'filter-forge' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            )
+        );
+
+        $this->start_controls_tabs( 'ff_button_style_tabs' );
+
+        $this->start_controls_tab(
+            'ff_button_style_normal',
+            array( 'label' => __( 'Normal', 'filter-forge' ) )
+        );
+
+        $this->add_control(
+            'ff_button_text_color',
+            array(
+                'label'     => __( 'Text Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} button' => 'color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_button_bg_color',
+            array(
+                'label'     => __( 'Background Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} button' => 'background-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Border::get_type(),
+            array(
+                'name'     => 'ff_button_border',
+                'selector' => '{{WRAPPER}} button',
+            )
+        );
+
+        $this->add_control(
+            'ff_button_border_radius',
+            array(
+                'label'      => __( 'Border Radius', 'filter-forge' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => array( 'px', '%' ),
+                'selectors'  => array(
+                    '{{WRAPPER}} button' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_button_padding',
+            array(
+                'label'      => __( 'Padding', 'filter-forge' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => array( 'px', 'em', '%' ),
+                'selectors'  => array(
+                    '{{WRAPPER}} button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Box_Shadow::get_type(),
+            array(
+                'name'     => 'ff_button_box_shadow',
+                'selector' => '{{WRAPPER}} button',
+            )
+        );
+
+        $this->end_controls_tab();
+
+        $this->start_controls_tab(
+            'ff_button_style_hover',
+            array( 'label' => __( 'Hover', 'filter-forge' ) )
+        );
+
+        $this->add_control(
+            'ff_button_text_color_hover',
+            array(
+                'label'     => __( 'Text Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} button:hover' => 'color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_button_bg_color_hover',
+            array(
+                'label'     => __( 'Background Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} button:hover' => 'background-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_button_border_color_hover',
+            array(
+                'label'     => __( 'Border Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} button:hover' => 'border-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Box_Shadow::get_type(),
+            array(
+                'name'     => 'ff_button_box_shadow_hover',
+                'selector' => '{{WRAPPER}} button:hover',
+            )
+        );
+
+        $this->end_controls_tab();
+
+        $this->end_controls_tabs();
+
+        $this->end_controls_section();
+    }
+
+    protected function register_header_style_controls(): void {
+        $this->start_controls_section(
+            'ff_style_header',
+            array(
+                'label' => __( 'Header', 'filter-forge' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            array(
+                'name'     => 'ff_header_typography',
+                'selector' => '{{WRAPPER}} .ff-filter__header',
+            )
+        );
+
+        $this->add_control(
+            'ff_header_padding',
+            array(
+                'label'      => __( 'Padding', 'filter-forge' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => array( 'px', 'em', '%' ),
+                'selectors'  => array(
+                    '{{WRAPPER}} .ff-filter__header' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_header_border_width',
+            array(
+                'label'     => __( 'Border Bottom Width', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::SLIDER,
+                'range'     => array(
+                    'px' => array( 'min' => 0, 'max' => 20 ),
+                ),
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-filter__header' => 'border-bottom-width: {{SIZE}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_header_border_style',
+            array(
+                'label'     => __( 'Border Bottom Style', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::SELECT,
+                'default'   => '',
+                'options'   => array(
+                    ''       => __( 'Default', 'filter-forge' ),
+                    'none'   => __( 'None', 'filter-forge' ),
+                    'solid'  => __( 'Solid', 'filter-forge' ),
+                    'dashed' => __( 'Dashed', 'filter-forge' ),
+                    'dotted' => __( 'Dotted', 'filter-forge' ),
+                ),
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-filter__header' => 'border-bottom-style: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_header_border_color',
+            array(
+                'label'     => __( 'Border Bottom Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-filter__header' => 'border-bottom-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->end_controls_section();
+    }
 }
