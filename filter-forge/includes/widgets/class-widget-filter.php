@@ -96,32 +96,12 @@ class FF_Widget_Filter extends FF_Widget_Base {
         );
 
         $this->add_control(
-            'ff_option_icon_active_color',
-            array(
-                'label'     => __( 'Active Icon Color', 'filter-forge' ),
-                'type'      => \Elementor\Controls_Manager::COLOR,
-                'default'   => '#ffffff',
-                'condition' => array( 'ff_display_style' => array( 'checkbox', 'radio' ) ),
-            )
-        );
-
-        $this->add_control(
             'ff_option_icon_inactive',
             array(
                 'label'       => __( 'Inactive Icon', 'filter-forge' ),
                 'type'        => \Elementor\Controls_Manager::ICONS,
                 'description' => __( 'Shown when this option is not selected.', 'filter-forge' ),
                 'condition'   => array( 'ff_display_style' => array( 'checkbox', 'radio' ) ),
-            )
-        );
-
-        $this->add_control(
-            'ff_option_icon_inactive_color',
-            array(
-                'label'     => __( 'Inactive Icon Color', 'filter-forge' ),
-                'type'      => \Elementor\Controls_Manager::COLOR,
-                'default'   => '#555555',
-                'condition' => array( 'ff_display_style' => array( 'checkbox', 'radio' ) ),
             )
         );
 
@@ -156,6 +136,40 @@ class FF_Widget_Filter extends FF_Widget_Base {
 
         $this->register_header_controls();
         $this->register_relationship_controls();
+
+        $this->register_text_style_controls();
+        $this->register_button_style_controls();
+        $this->register_header_style_controls();
+
+        $this->start_controls_section(
+            'ff_style_option_icons',
+            array(
+                'label' => __( 'Option Icons', 'filter-forge' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            )
+        );
+
+        $this->add_control(
+            'ff_option_icon_active_color',
+            array(
+                'label'     => __( 'Active Icon Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#ffffff',
+                'condition' => array( 'ff_display_style' => array( 'checkbox', 'radio' ) ),
+            )
+        );
+
+        $this->add_control(
+            'ff_option_icon_inactive_color',
+            array(
+                'label'     => __( 'Inactive Icon Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#555555',
+                'condition' => array( 'ff_display_style' => array( 'checkbox', 'radio' ) ),
+            )
+        );
+
+        $this->end_controls_section();
     }
 
     private function get_taxonomy_options(): array {
