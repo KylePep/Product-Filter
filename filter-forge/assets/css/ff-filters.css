@@ -168,6 +168,10 @@ select.ff-price--buckets-dropdown {
 
 .ff-price__input {
     width: 6em;
+    padding: 0.5em 0.75em;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    background: #fff;
 }
 
 .ff-price--slider {

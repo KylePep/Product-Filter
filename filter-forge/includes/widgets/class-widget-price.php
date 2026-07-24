@@ -122,6 +122,106 @@ class FF_Widget_Price extends FF_Widget_Base {
         $this->register_dropdown_style_controls( array( 'ff_price_bucket_style' => 'dropdown' ) );
 
         $this->start_controls_section(
+            'ff_style_number_input',
+            array(
+                'label'     => __( 'Number Input', 'filter-forge' ),
+                'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
+                'condition' => array( 'ff_price_mode' => 'input' ),
+            )
+        );
+
+        $this->add_control(
+            'ff_number_input_text_color',
+            array(
+                'label'     => __( 'Text Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-price__input' => 'color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_number_input_bg_color',
+            array(
+                'label'     => __( 'Background Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-price__input' => 'background-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Border::get_type(),
+            array(
+                'name'     => 'ff_number_input_border',
+                'selector' => '{{WRAPPER}} .ff-price__input',
+            )
+        );
+
+        $this->add_control(
+            'ff_number_input_border_radius',
+            array(
+                'label'      => __( 'Border Radius', 'filter-forge' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => array( 'px', '%' ),
+                'selectors'  => array(
+                    '{{WRAPPER}} .ff-price__input' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_number_input_padding',
+            array(
+                'label'      => __( 'Padding', 'filter-forge' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => array( 'px', 'em', '%' ),
+                'selectors'  => array(
+                    '{{WRAPPER}} .ff-price__input' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            array(
+                'name'     => 'ff_number_input_typography',
+                'selector' => '{{WRAPPER}} .ff-price__input',
+            )
+        );
+
+        $this->add_control(
+            'ff_number_input_focus_border_color',
+            array(
+                'label'     => __( 'Focus Border Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-price__input:focus' => 'border-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_number_input_width',
+            array(
+                'label'      => __( 'Width', 'filter-forge' ),
+                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => array( 'px', 'em', '%' ),
+                'range'      => array(
+                    'px' => array( 'min' => 30, 'max' => 300 ),
+                    'em' => array( 'min' => 2, 'max' => 20 ),
+                ),
+                'selectors'  => array(
+                    '{{WRAPPER}} .ff-price__input' => 'width: {{SIZE}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->end_controls_section();
+
+        $this->start_controls_section(
             'ff_style_price_clear_spacing',
             array(
                 'label' => __( 'Clear Button Spacing', 'filter-forge' ),
