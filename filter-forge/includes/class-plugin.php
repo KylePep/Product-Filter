@@ -65,6 +65,7 @@ class FF_Plugin {
         wp_enqueue_style( 'ff-filters', FF_PLUGIN_URL . 'assets/css/ff-filters.css', array(), FF_VERSION );
         wp_enqueue_script( 'ff-url', FF_PLUGIN_URL . 'assets/js/ff-url.js', array(), FF_VERSION, true );
         wp_enqueue_script( 'ff-filters', FF_PLUGIN_URL . 'assets/js/ff-filters.js', array( 'ff-url' ), FF_VERSION, true );
+        wp_enqueue_script( 'ff-dropdown', FF_PLUGIN_URL . 'assets/js/ff-dropdown.js', array(), FF_VERSION, true );
     }
 
     public function register_widget_category( $elements_manager ): void {
