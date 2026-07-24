@@ -441,6 +441,33 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
             )
         );
 
+        $this->add_control(
+            'ff_dropdown_trigger_caret_color',
+            array(
+                'label'     => __( 'Caret Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-dropdown__trigger::after' => 'border-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_trigger_width',
+            array(
+                'label'      => __( 'Width', 'filter-forge' ),
+                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => array( 'px', '%', 'em' ),
+                'range'      => array(
+                    'px' => array( 'min' => 50, 'max' => 800 ),
+                    '%'  => array( 'min' => 10, 'max' => 100 ),
+                ),
+                'selectors'  => array(
+                    '{{WRAPPER}} .ff-dropdown__trigger' => 'width: {{SIZE}}{{UNIT}};',
+                ),
+            )
+        );
+
         $this->add_group_control(
             \Elementor\Group_Control_Border::get_type(),
             array(
