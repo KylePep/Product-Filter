@@ -171,6 +171,39 @@ class FF_Widget_Filter extends FF_Widget_Base {
         );
 
         $this->end_controls_section();
+
+        $this->start_controls_section(
+            'ff_style_option_hover',
+            array(
+                'label'     => __( 'Option Hover/Focus', 'filter-forge' ),
+                'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
+                'condition' => array( 'ff_display_style' => array( 'checkbox', 'radio' ) ),
+            )
+        );
+
+        $this->add_control(
+            'ff_option_hover_bg_color',
+            array(
+                'label'     => __( 'Background Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-filter--checkbox li label:hover, {{WRAPPER}} .ff-filter--checkbox li label:has(input:focus-visible), {{WRAPPER}} .ff-filter--radio li label:hover, {{WRAPPER}} .ff-filter--radio li label:has(input:focus-visible)' => 'background-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_option_hover_text_color',
+            array(
+                'label'     => __( 'Text Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-filter--checkbox li label:hover, {{WRAPPER}} .ff-filter--checkbox li label:has(input:focus-visible), {{WRAPPER}} .ff-filter--radio li label:hover, {{WRAPPER}} .ff-filter--radio li label:has(input:focus-visible)' => 'color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->end_controls_section();
     }
 
     private function get_taxonomy_options(): array {
