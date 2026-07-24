@@ -286,6 +286,12 @@ select.ff-price--buckets-dropdown {
     border-bottom: 2px solid currentColor;
     transform: rotate(45deg);
     margin-top: -0.25em;
+    transition: transform 0.15s ease;
+}
+
+.ff-dropdown__trigger[aria-expanded="true"]::after {
+    transform: rotate(-135deg);
+    margin-top: 0.25em;
 }
 
 .ff-dropdown__panel {
