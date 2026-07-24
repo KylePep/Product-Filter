@@ -94,10 +94,12 @@ class FF_Plugin {
         require_once __DIR__ . '/widgets/class-widget-base.php';
         require_once __DIR__ . '/widgets/class-widget-filter.php';
         require_once __DIR__ . '/widgets/class-widget-price.php';
+        require_once __DIR__ . '/widgets/class-widget-orderby.php';
         require_once __DIR__ . '/widgets/class-widget-reset.php';
 
         $widgets_manager->register( new FF_Widget_Filter() );
         $widgets_manager->register( new FF_Widget_Price() );
+        $widgets_manager->register( new FF_Widget_Orderby() );
         $widgets_manager->register( new FF_Widget_Reset() );
     }
 }
