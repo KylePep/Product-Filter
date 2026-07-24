@@ -320,6 +320,65 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
 
         $this->end_controls_tab();
 
+        $this->start_controls_tab(
+            'ff_button_style_focus',
+            array( 'label' => __( 'Focus', 'filter-forge' ) )
+        );
+
+        $this->add_control(
+            'ff_button_text_color_focus',
+            array(
+                'label'     => __( 'Text Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} button:not(.ff-dropdown__trigger):focus-visible' => 'color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_button_bg_color_focus',
+            array(
+                'label'     => __( 'Background Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} button:not(.ff-dropdown__trigger):focus-visible' => 'background-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_button_border_color_focus',
+            array(
+                'label'     => __( 'Border Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} button:not(.ff-dropdown__trigger):focus-visible' => 'border-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_button_outline_color_focus',
+            array(
+                'label'     => __( 'Outline Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} button:not(.ff-dropdown__trigger):focus-visible' => 'outline-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Box_Shadow::get_type(),
+            array(
+                'name'     => 'ff_button_box_shadow_focus',
+                'selector' => '{{WRAPPER}} button:not(.ff-dropdown__trigger):focus-visible',
+            )
+        );
+
+        $this->end_controls_tab();
+
         $this->end_controls_tabs();
 
         $this->end_controls_section();
@@ -514,7 +573,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
                 'label'     => __( 'Focus Outline Color', 'filter-forge' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => array(
-                    '{{WRAPPER}} .ff-dropdown__trigger:focus' => 'outline-color: {{VALUE}};',
+                    '{{WRAPPER}} .ff-dropdown__trigger:focus-visible' => 'outline-color: {{VALUE}};',
                 ),
             )
         );

@@ -20,6 +20,22 @@
     margin: 0 0 0.5em;
 }
 
+.ff-filter--checkbox li label,
+.ff-filter--radio li label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25em 0.4em;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.ff-filter--checkbox li label:hover,
+.ff-filter--radio li label:hover,
+.ff-filter--checkbox li label:has(input:focus-visible),
+.ff-filter--radio li label:has(input:focus-visible) {
+    background: #f0f0f1;
+}
+
 .ff-filter__input--icon-mode {
     position: absolute;
     width: 1px;
@@ -287,6 +303,14 @@ select.ff-price--buckets-dropdown {
    these reliably outrank generic theme button-reset stylesheets (e.g.
    `[type=button], button { display: inline-block; }`), which can tie or
    beat a single-class selector on specificity and win on source order. */
+.ff-filter__clear:focus-visible,
+.ff-price__clear:focus-visible,
+.ff-price__apply:focus-visible,
+.ff-dropdown .ff-dropdown__trigger:focus-visible {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
+
 .ff-dropdown .ff-dropdown__trigger {
     display: flex;
     align-items: center;

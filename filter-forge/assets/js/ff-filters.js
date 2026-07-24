@@ -151,3 +151,47 @@ document.addEventListener( 'keydown', function ( event ) {
     event.preventDefault();
     ffApplyPriceRange( wrapper );
 } );
+
+/**
+ * Native grouped radios (shared `name`) select on arrow-key press,
+ * changing the value as focus moves -- no confirmation step. Overridden
+ * here so arrow keys only move focus; the radio isn't selected until
+ * Space (already native) or Enter (added below).
+ */
+document.addEventListener( 'keydown', function ( event ) {
+    const radio = event.target.closest( 'input[type="radio"][data-ff-param]' );
+    if ( ! radio ) {
+        return;
+    }
+
+    if ( 'Enter' === event.key ) {
+        if ( ! radio.checked ) {
+            radio.checked = true;
+            radio.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+        }
+        return;
+    }
+
+    const isNext = 'ArrowDown' === event.key || 'ArrowRight' === event.key;
+    const isPrev = 'ArrowUp' === event.key || 'ArrowLeft' === event.key;
+    if ( ! isNext && ! isPrev ) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const group = Array.prototype.filter.call(
+        document.getElementsByName( radio.name ),
+        function ( el ) { return 'radio' === el.type; }
+    );
+    const index = group.indexOf( radio );
+    if ( -1 === index ) {
+        return;
+    }
+
+    const nextIndex = isNext
+        ? ( index + 1 ) % group.length
+        : ( index - 1 + group.length ) % group.length;
+
+    group[ nextIndex ].focus();
+} );
