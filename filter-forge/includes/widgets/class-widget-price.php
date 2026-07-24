@@ -119,6 +119,7 @@ class FF_Widget_Price extends FF_Widget_Base {
 
         $this->register_text_style_controls();
         $this->register_button_style_controls();
+        $this->register_dropdown_style_controls( array( 'ff_price_bucket_style' => 'dropdown' ) );
 
         $this->start_controls_section(
             'ff_style_price_clear_spacing',
