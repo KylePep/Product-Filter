@@ -283,7 +283,11 @@ select.ff-price--buckets-dropdown {
     pointer-events: none;
 }
 
-.ff-dropdown__trigger {
+/* Scoped under the .ff-dropdown ancestor (not just the bare class) so
+   these reliably outrank generic theme button-reset stylesheets (e.g.
+   `[type=button], button { display: inline-block; }`), which can tie or
+   beat a single-class selector on specificity and win on source order. */
+.ff-dropdown .ff-dropdown__trigger {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -297,24 +301,24 @@ select.ff-price--buckets-dropdown {
     text-align: left;
 }
 
-.ff-dropdown__trigger-label {
+.ff-dropdown .ff-dropdown__trigger-label {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.ff-dropdown__trigger-caret {
+.ff-dropdown .ff-dropdown__trigger-caret {
     flex: 0 0 auto;
     font-size: 0.7em;
     line-height: 1;
     transition: transform 0.15s ease;
 }
 
-.ff-dropdown__trigger[aria-expanded="true"] .ff-dropdown__trigger-caret {
+.ff-dropdown .ff-dropdown__trigger[aria-expanded="true"] .ff-dropdown__trigger-caret {
     transform: rotate(180deg);
 }
 
-.ff-dropdown__panel {
+.ff-dropdown .ff-dropdown__panel {
     position: absolute;
     top: 100%;
     left: 0;
@@ -330,15 +334,15 @@ select.ff-price--buckets-dropdown {
     max-height: 16em;
 }
 
-.ff-dropdown__option {
+.ff-dropdown .ff-dropdown__option {
     padding: 0.5em 0.75em;
     cursor: pointer;
 }
 
-.ff-dropdown__option--active {
+.ff-dropdown .ff-dropdown__option--active {
     background: #f0f0f1;
 }
 
-.ff-dropdown__option[aria-selected="true"] {
+.ff-dropdown .ff-dropdown__option[aria-selected="true"] {
     font-weight: 600;
 }

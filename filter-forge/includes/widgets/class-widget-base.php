@@ -214,7 +214,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
                 'label'     => __( 'Text Color', 'filter-forge' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => array(
-                    '{{WRAPPER}} button' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} button:not(.ff-dropdown__trigger)' => 'color: {{VALUE}};',
                 ),
             )
         );
@@ -225,7 +225,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
                 'label'     => __( 'Background Color', 'filter-forge' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => array(
-                    '{{WRAPPER}} button' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} button:not(.ff-dropdown__trigger)' => 'background-color: {{VALUE}};',
                 ),
             )
         );
@@ -234,7 +234,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Border::get_type(),
             array(
                 'name'     => 'ff_button_border',
-                'selector' => '{{WRAPPER}} button',
+                'selector' => '{{WRAPPER}} button:not(.ff-dropdown__trigger)',
             )
         );
 
@@ -245,7 +245,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => array( 'px', '%' ),
                 'selectors'  => array(
-                    '{{WRAPPER}} button' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} button:not(.ff-dropdown__trigger)' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ),
             )
         );
@@ -257,7 +257,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => array( 'px', 'em', '%' ),
                 'selectors'  => array(
-                    '{{WRAPPER}} button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} button:not(.ff-dropdown__trigger)' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ),
             )
         );
@@ -266,7 +266,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Box_Shadow::get_type(),
             array(
                 'name'     => 'ff_button_box_shadow',
-                'selector' => '{{WRAPPER}} button',
+                'selector' => '{{WRAPPER}} button:not(.ff-dropdown__trigger)',
             )
         );
 
@@ -283,7 +283,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
                 'label'     => __( 'Text Color', 'filter-forge' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => array(
-                    '{{WRAPPER}} button:hover' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} button:not(.ff-dropdown__trigger):hover' => 'color: {{VALUE}};',
                 ),
             )
         );
@@ -294,7 +294,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
                 'label'     => __( 'Background Color', 'filter-forge' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => array(
-                    '{{WRAPPER}} button:hover' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} button:not(.ff-dropdown__trigger):hover' => 'background-color: {{VALUE}};',
                 ),
             )
         );
@@ -305,7 +305,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
                 'label'     => __( 'Border Color', 'filter-forge' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => array(
-                    '{{WRAPPER}} button:hover' => 'border-color: {{VALUE}};',
+                    '{{WRAPPER}} button:not(.ff-dropdown__trigger):hover' => 'border-color: {{VALUE}};',
                 ),
             )
         );
@@ -314,7 +314,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Box_Shadow::get_type(),
             array(
                 'name'     => 'ff_button_box_shadow_hover',
-                'selector' => '{{WRAPPER}} button:hover',
+                'selector' => '{{WRAPPER}} button:not(.ff-dropdown__trigger):hover',
             )
         );
 
