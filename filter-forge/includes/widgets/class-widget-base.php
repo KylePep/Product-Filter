@@ -400,4 +400,233 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
 
         $this->end_controls_section();
     }
+
+    protected function register_dropdown_style_controls( array $condition ): void {
+        $this->start_controls_section(
+            'ff_style_dropdown',
+            array(
+                'label'     => __( 'Dropdown', 'filter-forge' ),
+                'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
+                'condition' => $condition,
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_trigger_heading',
+            array(
+                'label' => __( 'Trigger', 'filter-forge' ),
+                'type'  => \Elementor\Controls_Manager::HEADING,
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_trigger_text_color',
+            array(
+                'label'     => __( 'Text Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-dropdown__trigger' => 'color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_trigger_bg_color',
+            array(
+                'label'     => __( 'Background Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-dropdown__trigger' => 'background-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Border::get_type(),
+            array(
+                'name'     => 'ff_dropdown_trigger_border',
+                'selector' => '{{WRAPPER}} .ff-dropdown__trigger',
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_trigger_border_radius',
+            array(
+                'label'      => __( 'Border Radius', 'filter-forge' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => array( 'px', '%' ),
+                'selectors'  => array(
+                    '{{WRAPPER}} .ff-dropdown__trigger' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_trigger_padding',
+            array(
+                'label'      => __( 'Padding', 'filter-forge' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => array( 'px', 'em', '%' ),
+                'selectors'  => array(
+                    '{{WRAPPER}} .ff-dropdown__trigger' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            array(
+                'name'     => 'ff_dropdown_trigger_typography',
+                'selector' => '{{WRAPPER}} .ff-dropdown__trigger',
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_trigger_focus_color',
+            array(
+                'label'     => __( 'Focus Outline Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-dropdown__trigger:focus' => 'outline-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_panel_heading',
+            array(
+                'label'     => __( 'Panel', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::HEADING,
+                'separator' => 'before',
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_panel_bg_color',
+            array(
+                'label'     => __( 'Background Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-dropdown__panel' => 'background-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Border::get_type(),
+            array(
+                'name'     => 'ff_dropdown_panel_border',
+                'selector' => '{{WRAPPER}} .ff-dropdown__panel',
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_panel_border_radius',
+            array(
+                'label'      => __( 'Border Radius', 'filter-forge' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => array( 'px', '%' ),
+                'selectors'  => array(
+                    '{{WRAPPER}} .ff-dropdown__panel' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Box_Shadow::get_type(),
+            array(
+                'name'     => 'ff_dropdown_panel_box_shadow',
+                'selector' => '{{WRAPPER}} .ff-dropdown__panel',
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_panel_max_height',
+            array(
+                'label'     => __( 'Max Height', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::SLIDER,
+                'range'     => array(
+                    'px' => array( 'min' => 50, 'max' => 600 ),
+                ),
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-dropdown__panel' => 'max-height: {{SIZE}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_option_heading',
+            array(
+                'label'     => __( 'Option', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::HEADING,
+                'separator' => 'before',
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_option_padding',
+            array(
+                'label'      => __( 'Padding', 'filter-forge' ),
+                'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => array( 'px', 'em', '%' ),
+                'selectors'  => array(
+                    '{{WRAPPER}} .ff-dropdown__option' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ),
+            )
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            array(
+                'name'     => 'ff_dropdown_option_typography',
+                'selector' => '{{WRAPPER}} .ff-dropdown__option',
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_option_hover_bg_color',
+            array(
+                'label'     => __( 'Hover Background Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-dropdown__option:hover, {{WRAPPER}} .ff-dropdown__option--active' => 'background-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_option_hover_text_color',
+            array(
+                'label'     => __( 'Hover Text Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-dropdown__option:hover, {{WRAPPER}} .ff-dropdown__option--active' => 'color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_option_selected_bg_color',
+            array(
+                'label'     => __( 'Selected Background Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-dropdown__option[aria-selected="true"]' => 'background-color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->add_control(
+            'ff_dropdown_option_selected_text_color',
+            array(
+                'label'     => __( 'Selected Text Color', 'filter-forge' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-dropdown__option[aria-selected="true"]' => 'color: {{VALUE}};',
+                ),
+            )
+        );
+
+        $this->end_controls_section();
+    }
 }
