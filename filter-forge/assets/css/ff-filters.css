@@ -265,6 +265,22 @@ select.ff-price--buckets-dropdown {
     height: 1px;
     opacity: 0;
     overflow: hidden;
+    pointer-events: none;
+}
+
+/* Set synchronously in <head> (see FF_Plugin::print_early_js_class()) so the
+   native select is hidden from the very first paint, before ff-dropdown.js
+   (footer-enqueued) has a chance to run -- avoids a flash of the
+   unenhanced select. Only applies when that early script actually ran, so
+   the select stays visible/interactive as a fallback if JS is blocked. */
+.ff-js select.ff-filter--dropdown,
+.ff-js select.ff-price--buckets-dropdown {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
 }
 
 .ff-dropdown__trigger {
@@ -282,20 +298,15 @@ select.ff-price--buckets-dropdown {
 }
 
 .ff-dropdown__trigger::after {
-    content: "";
+    content: "\25BC";
     flex: 0 0 auto;
-    width: 0.5em;
-    height: 0.5em;
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    transform: rotate(45deg);
-    margin-top: -0.25em;
+    font-size: 0.7em;
+    line-height: 1;
     transition: transform 0.15s ease;
 }
 
 .ff-dropdown__trigger[aria-expanded="true"]::after {
-    transform: rotate(-135deg);
-    margin-top: 0.25em;
+    transform: rotate(180deg);
 }
 
 .ff-dropdown__panel {

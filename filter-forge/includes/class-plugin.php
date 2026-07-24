@@ -59,6 +59,18 @@ class FF_Plugin {
         add_action( 'elementor/elements/categories_registered', array( $this, 'register_widget_category' ) );
         add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+        add_action( 'wp_head', array( $this, 'print_early_js_class' ), 0 );
+    }
+
+    /**
+     * Printed synchronously as early as possible in <head> -- CSS gates the
+     * native-select hiding rule (ff-filters.css) on this class so the raw
+     * select is hidden from first paint instead of flashing visible until
+     * ff-dropdown.js (footer-enqueued) runs. If JS is blocked, this never
+     * prints, so the select stays visible/interactive as the fallback.
+     */
+    public function print_early_js_class(): void {
+        echo '<script>document.documentElement.classList.add("ff-js");</script>' . "\n";
     }
 
     public function enqueue_assets(): void {

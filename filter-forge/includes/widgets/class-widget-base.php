@@ -447,7 +447,7 @@ abstract class FF_Widget_Base extends \Elementor\Widget_Base {
                 'label'     => __( 'Caret Color', 'filter-forge' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => array(
-                    '{{WRAPPER}} .ff-dropdown__trigger::after' => 'border-color: {{VALUE}};',
+                    '{{WRAPPER}} .ff-dropdown__trigger::after' => 'color: {{VALUE}};',
                 ),
             )
         );
