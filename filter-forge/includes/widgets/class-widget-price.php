@@ -153,7 +153,10 @@ class FF_Widget_Price extends FF_Widget_Base {
             array(
                 'label'     => __( 'Bucket Colors', 'filter-forge' ),
                 'tab'       => \Elementor\Controls_Manager::TAB_STYLE,
-                'condition' => array( 'ff_price_mode' => 'buckets' ),
+                'condition' => array(
+                    'ff_price_mode'         => 'buckets',
+                    'ff_price_bucket_style' => 'list',
+                ),
             )
         );
 
