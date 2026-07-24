@@ -297,15 +297,20 @@ select.ff-price--buckets-dropdown {
     text-align: left;
 }
 
-.ff-dropdown__trigger::after {
-    content: "\25BC";
+.ff-dropdown__trigger-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ff-dropdown__trigger-caret {
     flex: 0 0 auto;
     font-size: 0.7em;
     line-height: 1;
     transition: transform 0.15s ease;
 }
 
-.ff-dropdown__trigger[aria-expanded="true"]::after {
+.ff-dropdown__trigger[aria-expanded="true"] .ff-dropdown__trigger-caret {
     transform: rotate(180deg);
 }
 

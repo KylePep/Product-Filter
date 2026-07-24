@@ -27,6 +27,21 @@
         trigger.setAttribute( 'aria-expanded', 'false' );
         trigger.id = idPrefix + '-trigger';
 
+        // Real child nodes, not a ::after pseudo-element on the button --
+        // pseudo-elements hosted directly on native form controls like
+        // <button> have unreliable cross-browser support (both layout
+        // participation and transforms), unlike plain child elements.
+        var triggerLabel = document.createElement( 'span' );
+        triggerLabel.className = 'ff-dropdown__trigger-label';
+
+        var triggerCaret = document.createElement( 'span' );
+        triggerCaret.className = 'ff-dropdown__trigger-caret';
+        triggerCaret.setAttribute( 'aria-hidden', 'true' );
+        triggerCaret.textContent = '▼';
+
+        trigger.appendChild( triggerLabel );
+        trigger.appendChild( triggerCaret );
+
         var panel = document.createElement( 'ul' );
         panel.className = 'ff-dropdown__panel';
         panel.setAttribute( 'role', 'listbox' );
@@ -55,7 +70,7 @@
 
         function updateTriggerLabel() {
             var option = options[ selectedIndex() ];
-            trigger.textContent = option ? option.textContent : '';
+            triggerLabel.textContent = option ? option.textContent : '';
         }
 
         var activeIndex = selectedIndex();
