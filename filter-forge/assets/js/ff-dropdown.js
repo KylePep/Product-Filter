@@ -225,6 +225,6 @@
     }
 
     document.addEventListener( 'DOMContentLoaded', function () {
-        document.querySelectorAll( 'select.ff-filter--dropdown, select.ff-price--buckets-dropdown' ).forEach( enhance );
+        document.querySelectorAll( 'select.ff-filter--dropdown, select.ff-price--buckets-dropdown, select.ff-orderby--dropdown' ).forEach( enhance );
     } );
 }() );

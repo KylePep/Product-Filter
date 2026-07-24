@@ -55,7 +55,8 @@
     flex: 0 0 auto;
 }
 
-select.ff-filter--dropdown {
+select.ff-filter--dropdown,
+select.ff-orderby--dropdown {
     display: block;
     width: 100%;
     max-width: 100%;
@@ -290,7 +291,8 @@ select.ff-price--buckets-dropdown {
    unenhanced select. Only applies when that early script actually ran, so
    the select stays visible/interactive as a fallback if JS is blocked. */
 .ff-js select.ff-filter--dropdown,
-.ff-js select.ff-price--buckets-dropdown {
+.ff-js select.ff-price--buckets-dropdown,
+.ff-js select.ff-orderby--dropdown {
     position: absolute;
     width: 1px;
     height: 1px;
