@@ -160,14 +160,14 @@ select.ff-price--buckets-dropdown {
 }
 
 .ff-price--input label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25em;
+    display: block;
     font-size: 0.85em;
 }
 
 .ff-price__input {
+    display: block;
     width: 6em;
+    margin-top: 0.25em;
     padding: 0.5em 0.75em;
     border: 1px solid #8c8f94;
     border-radius: 4px;
