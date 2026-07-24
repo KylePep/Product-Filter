@@ -250,3 +250,69 @@ select.ff-price--buckets-dropdown {
     background: var(--ff-slider-handle, #ffffff);
     cursor: pointer;
 }
+
+.ff-dropdown {
+    position: relative;
+}
+
+.ff-dropdown__native {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.ff-dropdown__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5em;
+    width: 100%;
+    padding: 0.5em 0.75em;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+}
+
+.ff-dropdown__trigger::after {
+    content: "";
+    flex: 0 0 auto;
+    width: 0.5em;
+    height: 0.5em;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    margin-top: -0.25em;
+}
+
+.ff-dropdown__panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    margin: 0.25em 0 0;
+    padding: 0.25em 0;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    overflow-y: auto;
+    max-height: 16em;
+}
+
+.ff-dropdown__option {
+    padding: 0.5em 0.75em;
+    cursor: pointer;
+}
+
+.ff-dropdown__option--active {
+    background: #f0f0f1;
+}
+
+.ff-dropdown__option[aria-selected="true"] {
+    font-weight: 600;
+}
