@@ -140,6 +140,7 @@ class FF_Widget_Filter extends FF_Widget_Base {
         $this->register_text_style_controls();
         $this->register_button_style_controls();
         $this->register_header_style_controls();
+        $this->register_dropdown_style_controls( array( 'ff_display_style' => 'dropdown' ) );
 
         $this->start_controls_section(
             'ff_style_option_icons',
