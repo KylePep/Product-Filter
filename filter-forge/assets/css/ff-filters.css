@@ -216,7 +216,7 @@ select.ff-price--buckets-dropdown {
     height: 0.25em;
     transform: translateY(-50%);
     border-radius: 999px;
-    background: var(--ff-slider-track, #dcdcde);
+    background: #dcdcde;
 }
 
 .ff-price__slider-range {
@@ -225,7 +225,7 @@ select.ff-price--buckets-dropdown {
     height: 0.25em;
     transform: translateY(-50%);
     border-radius: 999px;
-    background: var(--ff-slider-range, #2271b1);
+    background: #2271b1;
 }
 
 .ff-price__range {
@@ -258,7 +258,7 @@ select.ff-price--buckets-dropdown {
     height: 1.1em;
     border-radius: 50%;
     border: 1px solid #8c8f94;
-    background: var(--ff-slider-handle, #ffffff);
+    background: #ffffff;
     cursor: pointer;
 }
 
@@ -268,7 +268,7 @@ select.ff-price--buckets-dropdown {
     height: 1.1em;
     border-radius: 50%;
     border: 1px solid #8c8f94;
-    background: var(--ff-slider-handle, #ffffff);
+    background: #ffffff;
     cursor: pointer;
 }
 

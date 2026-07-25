@@ -15,7 +15,7 @@ class FF_Widget_Reset extends \Elementor\Widget_Base {
     }
 
     public function get_icon(): string {
-        return 'eicon-refresh';
+        return 'ff-icon-anvil';
     }
 
     public function get_categories(): array {

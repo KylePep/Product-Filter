@@ -47,10 +47,10 @@ function ffUpdateSliderVisual( wrapper ) {
     range.style.width = ( ( maxVal - minVal ) / span * 100 ) + '%';
 
     if ( minLabel ) {
-        minLabel.textContent = minInput.value;
+        minLabel.textContent = '$' + minInput.value;
     }
     if ( maxLabel ) {
-        maxLabel.textContent = maxInput.value;
+        maxLabel.textContent = '$' + maxInput.value;
     }
 }
 

@@ -60,6 +60,8 @@ class FF_Plugin {
         add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
         add_action( 'wp_head', array( $this, 'print_early_js_class' ), 0 );
+        add_action( 'elementor/editor/after_enqueue_styles', array( $this, 'enqueue_editor_assets' ) );
+        add_action( 'elementor/preview/enqueue_styles', array( $this, 'enqueue_editor_assets' ) );
     }
 
     /**
@@ -80,12 +82,22 @@ class FF_Plugin {
         wp_enqueue_script( 'ff-dropdown', FF_PLUGIN_URL . 'assets/js/ff-dropdown.js', array(), FF_VERSION, true );
     }
 
+    /**
+     * Registered on both the editor UI and the preview iframe -- the empty-
+     * widget placeholder Elementor renders in the canvas before a widget has
+     * content lives in the iframe, not the parent editor document, so the
+     * icon CSS needs to load in both places.
+     */
+    public function enqueue_editor_assets(): void {
+        wp_enqueue_style( 'ff-editor-icons', FF_PLUGIN_URL . 'assets/css/ff-editor-icons.css', array(), FF_VERSION );
+    }
+
     public function register_widget_category( $elements_manager ): void {
         $elements_manager->add_category(
             'filter-forge',
             array(
                 'title' => __( 'Filter Forge', 'filter-forge' ),
-                'icon'  => 'eicon-filter',
+                'icon'  => 'ff-icon-anvil',
             )
         );
     }

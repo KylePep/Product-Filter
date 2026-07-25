@@ -15,7 +15,7 @@ class FF_Widget_Price extends FF_Widget_Base {
     }
 
     public function get_icon(): string {
-        return 'eicon-price-table';
+        return 'ff-icon-anvil';
     }
 
     protected function register_controls(): void {
@@ -304,6 +304,9 @@ class FF_Widget_Price extends FF_Widget_Base {
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'default'   => '#dcdcde',
                 'condition' => array( 'ff_price_mode' => 'slider' ),
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-price__slider-track::before' => 'background: {{VALUE}};',
+                ),
             )
         );
 
@@ -314,6 +317,9 @@ class FF_Widget_Price extends FF_Widget_Base {
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'default'   => '#2271b1',
                 'condition' => array( 'ff_price_mode' => 'slider' ),
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-price__slider-range' => 'background: {{VALUE}};',
+                ),
             )
         );
 
@@ -324,6 +330,10 @@ class FF_Widget_Price extends FF_Widget_Base {
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'default'   => '#ffffff',
                 'condition' => array( 'ff_price_mode' => 'slider' ),
+                'selectors' => array(
+                    '{{WRAPPER}} .ff-price__range::-webkit-slider-thumb' => 'background: {{VALUE}};',
+                    '{{WRAPPER}} .ff-price__range::-moz-range-thumb'     => 'background: {{VALUE}};',
+                ),
             )
         );
 
@@ -507,8 +517,7 @@ class FF_Widget_Price extends FF_Widget_Base {
      * before JS runs); JS keeps the overlay/live text in sync while dragging.
      */
     private function render_slider_range( ?string $current_min, ?string $current_max ): void {
-        $settings = $this->get_settings_for_display();
-        $bounds   = $this->get_price_bounds();
+        $bounds = $this->get_price_bounds();
 
         $bound_min = (float) $bounds->min_price;
         $bound_max = (float) $bounds->max_price;
@@ -520,25 +529,18 @@ class FF_Widget_Price extends FF_Widget_Base {
         $left  = ( $value_min - $bound_min ) / $span * 100;
         $width = ( $value_max - $value_min ) / $span * 100;
 
-        $track_color  = $settings['ff_slider_track_color'] ?? '#dcdcde';
-        $range_color  = $settings['ff_slider_range_color'] ?? '#2271b1';
-        $handle_color = $settings['ff_slider_handle_color'] ?? '#ffffff';
-
         printf(
-            '<div class="ff-price ff-price--slider" style="--ff-slider-track:%1$s;--ff-slider-range:%2$s;--ff-slider-handle:%3$s;">
+            '<div class="ff-price ff-price--slider">
                 <div class="ff-price__slider-values">
-                    <span data-ff-slider-display="min">%4$s</span> &ndash; <span data-ff-slider-display="max">%5$s</span>
+                    <span data-ff-slider-display="min">$%1$s</span> &ndash; <span data-ff-slider-display="max">$%2$s</span>
                 </div>
                 <div class="ff-price__slider-track">
-                    <div class="ff-price__slider-range" style="left:%6$s%%;width:%7$s%%;"></div>
-                    <input type="range" class="ff-price__range" data-ff-price-role="min" min="%8$s" max="%9$s" step="1" value="%10$s" />
-                    <input type="range" class="ff-price__range" data-ff-price-role="max" min="%8$s" max="%9$s" step="1" value="%11$s" />
+                    <div class="ff-price__slider-range" style="left:%3$s%%;width:%4$s%%;"></div>
+                    <input type="range" class="ff-price__range" data-ff-price-role="min" min="%5$s" max="%6$s" step="1" value="%7$s" />
+                    <input type="range" class="ff-price__range" data-ff-price-role="max" min="%5$s" max="%6$s" step="1" value="%8$s" />
                 </div>
-                <button type="button" class="ff-price__apply">%12$s</button>
+                <button type="button" class="ff-price__apply">%9$s</button>
             </div>',
-            esc_attr( $track_color ),
-            esc_attr( $range_color ),
-            esc_attr( $handle_color ),
             esc_html( (string) round( $value_min ) ),
             esc_html( (string) round( $value_max ) ),
             esc_attr( (string) round( $left, 4 ) ),

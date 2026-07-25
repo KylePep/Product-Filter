@@ -15,7 +15,7 @@ class FF_Widget_Orderby extends FF_Widget_Base {
     }
 
     public function get_icon(): string {
-        return 'eicon-sort';
+        return 'ff-icon-anvil';
     }
 
     protected function register_controls(): void {
