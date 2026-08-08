@@ -526,6 +526,12 @@ class FF_Widget_Price extends FF_Widget_Base {
         $value_min = null !== $current_min ? (float) $current_min : $bound_min;
         $value_max = null !== $current_max ? (float) $current_max : $bound_max;
 
+        // Clamp to the slider's own bounds -- other widgets (e.g. a price bucket)
+        // can set min_price/max_price far outside this range, and an unclamped
+        // value here would push the overlay bar's width/left past 100%.
+        $value_min = max( $bound_min, min( $value_min, $bound_max ) );
+        $value_max = max( $bound_min, min( $value_max, $bound_max ) );
+
         $left  = ( $value_min - $bound_min ) / $span * 100;
         $width = ( $value_max - $value_min ) / $span * 100;
 

@@ -205,6 +205,7 @@ select.ff-price--buckets-dropdown {
 .ff-price__slider-track {
     position: relative;
     height: 1.25em;
+    overflow: hidden;
 }
 
 .ff-price__slider-track::before {
